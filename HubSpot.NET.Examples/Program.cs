@@ -50,7 +50,7 @@ namespace HubSpot.NET.Examples
             var container = host.Build();
             var configuration = container.Services.GetService<IConfiguration>();
 
-            var api = new HubSpotApi("pat-na1-a458f8a1-0e38-49e5-b757-bc608018bdf6");
+            var api = new HubSpotApi(configuration["HubSpot:PrivateAppKey"]);
 
             var customSchemas = api.Schema.List<SchemaHubSpotModel>();
             var id = "2-" + customSchemas.Results.First(x => x.Name == "Machine2").Id;
