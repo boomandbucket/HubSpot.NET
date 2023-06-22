@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using HubSpot.NET.Core.OAuth.Dto;
 using RestSharp;
 
@@ -23,6 +24,9 @@ namespace HubSpot.NET.Core.Interfaces
         T ExecuteList<T>(string absoluteUriPath, object entity = null, Method method = Method.GET, bool convertToPropertiesSchema = true) where T : IHubSpotModel, new();
         T ExecuteList<T>(string absoluteUriPath, object entity = null, Method method = Method.GET, SerialisationType serialisationType = SerialisationType.PropertyBag) where T : IHubSpotModel, new();
 
+        Task<T> ExecuteFileUpload<T>(string absoluteUriPath, byte[] data, string filename,
+            Dictionary<string, string> parameters) where T : new();
+        
         void UpdateToken(HubSpotToken token);
     }
 }

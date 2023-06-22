@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using HubSpot.NET.Core.Extensions;
 using HubSpot.NET.Core.Interfaces;
 using HubSpot.NET.Core.OAuth.Dto;
 using HubSpot.NET.Core.Requests;
 using HubSpot.NET.Core.Serializers;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace HubSpot.NET.Core
@@ -121,6 +124,39 @@ namespace HubSpot.NET.Core
                 throw new HubSpotException("Error from HubSpot", new HubSpotError(response.StatusCode, response.StatusDescription));
 
             return responseData;
+        }
+
+        public async Task<T> ExecuteFileUpload<T>(string absoluteUriPath, byte[] data, string filename, Dictionary<string,string> parameters)  where T : new()
+        {
+            string path = $"{BaseUrl}{absoluteUriPath}";
+            
+            var httpClient = new HttpClient();
+            
+            var content = new MultipartFormDataContent();
+            
+            content.Add(new ByteArrayContent(data), "file", filename);
+
+            foreach (KeyValuePair<string, string> kvp in parameters)
+            {
+                var value = kvp.Value ?? "";
+                var key = kvp.Key;
+                content.Add(new StringContent(value), key);
+            }
+               
+            var request = new HttpRequestMessage(HttpMethod.Post, path);
+            request.Headers.Add("Authorization", $"Bearer {_apiKey}");
+            request.Content = content;
+    
+            var response = await httpClient.SendAsync(request);
+    
+            response.EnsureSuccessStatusCode();
+
+            var fileUploadJsonResponse = await response.Content.ReadAsStringAsync();
+
+            var parsedFileUploadResponse = JsonConvert.DeserializeObject<T>(fileUploadJsonResponse);
+
+            return parsedFileUploadResponse;
+
         }
 
         public T ExecuteList<T>(string absoluteUriPath, object entity = null, Method method = Method.GET, bool convertToPropertiesSchema = true) where T : IHubSpotModel, new()

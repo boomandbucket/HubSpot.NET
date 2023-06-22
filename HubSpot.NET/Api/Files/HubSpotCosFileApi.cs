@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace HubSpot.NET.Api.Files
 {
@@ -32,16 +33,17 @@ namespace HubSpot.NET.Api.Files
         /// </summary>
         /// <param name="entity">The file to upload</param>
         /// <returns>The uploaded file</returns>
-        public FileHubSpotResponseModel UploadFile(FileHubSpotRequestModel entity)
+        public async Task<FileHubSpotResponseModel> UploadFile(FileHubSpotRequestModel entity)
         {
             var path = $"{new FileHubSpotRequestModel().RouteBasePath}/upload";
-            var data = _client.ExecuteMultipart<FileHubSpotResponseModel>(path, entity.File, entity.Name,
+            var data = await _client.ExecuteFileUpload<FileHubSpotResponseModel>(path, entity.File, entity.Name,
                 new Dictionary<string, string>()
                 {
                     {"folderPath", entity.FolderPath},
-                    {"folderId", entity.FolderId},
-                    {"options", JsonConvert.SerializeObject(entity.Options)}
+                    // {"folderId", entity.FolderId},
+                    {"options", "{\"access\":\"PRIVATE\",\"ttl\":\"P3M\",\"overwrite\":true,\"duplicateValidationStrategy\":\"REJECT\",\"duplicateValidationScope\":\"EXACT_FOLDER\"}"}
                 }); 
+            
             return data;
         }
         
