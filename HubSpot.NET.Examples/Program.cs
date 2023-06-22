@@ -50,93 +50,93 @@ namespace HubSpot.NET.Examples
             var container = host.Build();
             var configuration = container.Services.GetService<IConfiguration>();
 
-            var api = new HubSpotApi("pat-na1-a458f8a1-0e38-49e5-b757-bc608018bdf6");
+            var api = new HubSpotApi(configuration["HubSpot:PrivateAppKey"]);
 
-            // var customSchemas = api.Schema.List<SchemaHubSpotModel>();
-            // var id = "2-" + customSchemas.Results.First(x => x.Name == "Machine2").Id;
-            //
-            // // get the equipment id off seller id...
-            //
-            // var newEquipment = new CreateCustomObjectHubSpotModel
-            // {
-            //     SchemaId = id,
-            //     Properties = new Dictionary<string, object>()
-            //     {
-            //         
-            //         {"year1", 2014},
-            //         {"make", "Ford"},
-            //         {"model", "150" + DateTime.Now.Hour + DateTime.Now.Minute},
-            //         {"name", $"2015 Ford 150"}
-            //     },
-            //     Associations = new List<CreateCustomObjectHubSpotModel.Association>()
-            //     {
-            //         new()
-            //         {
-            //             To = new CreateCustomObjectHubSpotModel.To()
-            //             {
-            //                 Id = "15273381013"  // company to associate to 
-            //             },
-            //             Types = new List<CreateCustomObjectHubSpotModel.TypeElement>()
-            //             {
-            //                 new()
-            //                 {
-            //                     AssociationCategory = "USER_DEFINED", 
-            //                     AssociationTypeId = 53 // id of the label that we want to assign it.
-            //                 }
-            //             }
-            //         },
-            //         new()
-            //         {
-            //             To = new CreateCustomObjectHubSpotModel.To()
-            //             {
-            //                 Id = "68751"  // contact to associate to 
-            //             },
-            //             Types = new List<CreateCustomObjectHubSpotModel.TypeElement>()
-            //             {
-            //                 new()
-            //                 {
-            //                     AssociationCategory = "USER_DEFINED", 
-            //                     AssociationTypeId = 55 // id of the label that we want to assign it.
-            //                 }
-            //             }
-            //         }
-            //     }
-            // };
-            // // 0-3 => object type id that corresponds to the deal
-            // // 9909067546 => deal id
-            // var newEquipmentId = api.CustomObjects.CreateWithDefaultAssociationToObject(newEquipment, "0-3", "9909067546");
-            //
-            //
-            // var result3 = api.CustomObjects.GetAssociationsToCustomObject
-            //     <CustomObjectAssociationModel>("2-4390924", "3254092177",
-            //     "0-1", CancellationToken.None);
-            //
-            //
-            //
-            // // 0-3 -> deal object type
-            // // 9346274448 -> deal id
-            // // 0-1 -> contact object type
-            // // 68751 -> contact id
-            // // USER_DEFINED -> associationCategory
-            // // 55 -> association label
-            // // api.Associations.AssociationToObjectByLabel("0-3", "9346274448", "0-1", "68751", "USER_DEFINED", 55);
-            //
-            //
-            // var updatedEquipment = new UpdateCustomObjectHubSpotModel
-            // {
-            //     Id = newEquipmentId,
-            //     SchemaId = id,
-            //     Properties = new Dictionary<string, object>()
-            //     {
-            //         {"year1", 2024},
-            //         {"make", "Ford"},
-            //         {"model", "550" + DateTime.Now.Hour + DateTime.Now.Minute},
-            //         {"name", $"2024 Ford 550"}
-            //     }
-            // };
-            //
-            // var updatedResultId = api.CustomObjects.UpdateObject(updatedEquipment);
-            // Console.Write(updatedResultId);
+            var customSchemas = api.Schema.List<SchemaHubSpotModel>();
+            var id = "2-" + customSchemas.Results.First(x => x.Name == "Machine2").Id;
+            
+            // get the equipment id off seller id...
+            
+            var newEquipment = new CreateCustomObjectHubSpotModel
+            {
+                SchemaId = id,
+                Properties = new Dictionary<string, object>()
+                {
+                    
+                    {"year1", 2014},
+                    {"make", "Ford"},
+                    {"model", "150" + DateTime.Now.Hour + DateTime.Now.Minute},
+                    {"name", $"2015 Ford 150"}
+                },
+                Associations = new List<CreateCustomObjectHubSpotModel.Association>()
+                {
+                    new()
+                    {
+                        To = new CreateCustomObjectHubSpotModel.To()
+                        {
+                            Id = "15273381013"  // company to associate to 
+                        },
+                        Types = new List<CreateCustomObjectHubSpotModel.TypeElement>()
+                        {
+                            new()
+                            {
+                                AssociationCategory = "USER_DEFINED", 
+                                AssociationTypeId = 53 // id of the label that we want to assign it.
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        To = new CreateCustomObjectHubSpotModel.To()
+                        {
+                            Id = "68751"  // contact to associate to 
+                        },
+                        Types = new List<CreateCustomObjectHubSpotModel.TypeElement>()
+                        {
+                            new()
+                            {
+                                AssociationCategory = "USER_DEFINED", 
+                                AssociationTypeId = 55 // id of the label that we want to assign it.
+                            }
+                        }
+                    }
+                }
+            };
+            // 0-3 => object type id that corresponds to the deal
+            // 9909067546 => deal id
+            var newEquipmentId = api.CustomObjects.CreateWithDefaultAssociationToObject(newEquipment, "0-3", "9909067546");
+            
+            
+            var result3 = api.CustomObjects.GetAssociationsToCustomObject
+                <CustomObjectAssociationModel>("2-4390924", "3254092177",
+                "0-1", CancellationToken.None);
+            
+            
+            
+            // 0-3 -> deal object type
+            // 9346274448 -> deal id
+            // 0-1 -> contact object type
+            // 68751 -> contact id
+            // USER_DEFINED -> associationCategory
+            // 55 -> association label
+            // api.Associations.AssociationToObjectByLabel("0-3", "9346274448", "0-1", "68751", "USER_DEFINED", 55);
+            
+            
+            var updatedEquipment = new UpdateCustomObjectHubSpotModel
+            {
+                Id = newEquipmentId,
+                SchemaId = id,
+                Properties = new Dictionary<string, object>()
+                {
+                    {"year1", 2024},
+                    {"make", "Ford"},
+                    {"model", "550" + DateTime.Now.Hour + DateTime.Now.Minute},
+                    {"name", $"2024 Ford 550"}
+                }
+            };
+            
+            var updatedResultId = api.CustomObjects.UpdateObject(updatedEquipment);
+            Console.Write(updatedResultId);
 
 
             await UploadNoteWithFile(api);
@@ -169,7 +169,7 @@ namespace HubSpot.NET.Examples
             try
             {
                 fileBuffer = await httpClient.GetByteArrayAsync(
-                    "https://res.cloudinary.com/boom-and-bucket/image/upload/v1687382156/local_matt/af864928-1ade-4576-aaaf-019466c6fa20/documents/udxgtsrybm1ch1z2gwkv.jpg");
+                    "https://images.immediate.co.uk/production/volatile/sites/4/2021/08/mountains-7ddde89.jpg");
             }
             catch (Exception e)
             {
@@ -180,7 +180,7 @@ namespace HubSpot.NET.Examples
             var fileModel = new FileHubSpotRequestModel()
             {
                 File = fileBuffer,
-                Name = "test-title-program.jpg",
+                Name = "mountains.jpg",
                 FolderPath = "/docs",
                 Options = new FileHubSpotRequestOptionsModel()
                 {
@@ -202,7 +202,7 @@ namespace HubSpot.NET.Examples
                 Properties = new NoteHubSpotRequestPropertiesModel()
                 {
                     HsTimestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
-                    HsNoteBody = "Hello there from nuget again, with a new file 4, async",
+                    HsNoteBody = "Hello there from nuget again, with a new file 3",
                     HubspotOwnerId = "",
                     HsAttachmentIds = fileResponse?.Objects?.First().Id.ToString(),
                 },

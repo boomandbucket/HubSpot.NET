@@ -40,8 +40,8 @@ namespace HubSpot.NET.Api.Files
                 new Dictionary<string, string>()
                 {
                     {"folderPath", entity.FolderPath},
-                    // {"folderId", entity.FolderId},
-                    {"options", "{\"access\":\"PRIVATE\",\"ttl\":\"P3M\",\"overwrite\":true,\"duplicateValidationStrategy\":\"REJECT\",\"duplicateValidationScope\":\"EXACT_FOLDER\"}"}
+                    {"folderId", entity.FolderId},
+                    {"options", JsonConvert.SerializeObject(entity.Options)}
                 }); 
             
             return data;

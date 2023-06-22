@@ -138,12 +138,15 @@ namespace HubSpot.NET.Core
 
             foreach (KeyValuePair<string, string> kvp in parameters)
             {
-                var value = kvp.Value ?? "";
-                var key = kvp.Key;
-                content.Add(new StringContent(value), key);
+                if (string.IsNullOrEmpty(kvp.Value))
+                {
+                    continue;
+                }
+                content.Add(new StringContent(kvp.Value),  kvp.Key);
             }
                
             var request = new HttpRequestMessage(HttpMethod.Post, path);
+            
             request.Headers.Add("Authorization", $"Bearer {_apiKey}");
             request.Content = content;
     
@@ -156,7 +159,6 @@ namespace HubSpot.NET.Core
             var parsedFileUploadResponse = JsonConvert.DeserializeObject<T>(fileUploadJsonResponse);
 
             return parsedFileUploadResponse;
-
         }
 
         public T ExecuteList<T>(string absoluteUriPath, object entity = null, Method method = Method.GET, bool convertToPropertiesSchema = true) where T : IHubSpotModel, new()
