@@ -129,36 +129,38 @@ namespace HubSpot.NET.Core
         public async Task<T> ExecuteFileUpload<T>(string absoluteUriPath, byte[] data, string filename, Dictionary<string,string> parameters)  where T : new()
         {
             string path = $"{BaseUrl}{absoluteUriPath}";
-            
-            var httpClient = new HttpClient();
-            
-            var content = new MultipartFormDataContent();
-            
-            content.Add(new ByteArrayContent(data), "file", filename);
 
-            foreach (KeyValuePair<string, string> kvp in parameters)
+            using (var httpClient = new HttpClient())
             {
-                if (string.IsNullOrEmpty(kvp.Value))
-                {
-                    continue;
-                }
-                content.Add(new StringContent(kvp.Value),  kvp.Key);
-            }
-               
-            var request = new HttpRequestMessage(HttpMethod.Post, path);
+                var content = new MultipartFormDataContent();
             
-            request.Headers.Add("Authorization", $"Bearer {_apiKey}");
-            request.Content = content;
+                content.Add(new ByteArrayContent(data), "file", filename);
+
+                foreach (KeyValuePair<string, string> kvp in parameters)
+                {
+                    if (string.IsNullOrEmpty(kvp.Value))
+                    {
+                        continue;
+                    }
+                    content.Add(new StringContent(kvp.Value),  kvp.Key);
+                }
+               
+                var request = new HttpRequestMessage(HttpMethod.Post, path);
+            
+                request.Headers.Add("Authorization", $"Bearer {_apiKey}");
+                request.Content = content;
     
-            var response = await httpClient.SendAsync(request);
+                var response = await httpClient.SendAsync(request);
     
-            response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
 
-            var fileUploadJsonResponse = await response.Content.ReadAsStringAsync();
+                var fileUploadJsonResponse = await response.Content.ReadAsStringAsync();
 
-            var parsedFileUploadResponse = JsonConvert.DeserializeObject<T>(fileUploadJsonResponse);
+                var parsedFileUploadResponse = JsonConvert.DeserializeObject<T>(fileUploadJsonResponse);
 
-            return parsedFileUploadResponse;
+                return parsedFileUploadResponse;
+                
+            }
         }
 
         public T ExecuteList<T>(string absoluteUriPath, object entity = null, Method method = Method.GET, bool convertToPropertiesSchema = true) where T : IHubSpotModel, new()
