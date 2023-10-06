@@ -123,6 +123,25 @@ public class CustomObjectHubSpotModel : IHubSpotModel
 }
 
 
+public class GetHubspotHoursMileageModel : IHubSpotModel
+{
+    [DataMember(Name = "hoursMileage")]
+    public string HoursMileage { get; set; }
+
+
+
+    public bool IsNameValue => false;
+    public void ToHubSpotDataEntity(ref dynamic dataEntity)
+    {
+    }
+
+    public void FromHubSpotDataEntity(dynamic hubspotData)
+    {
+    }
+
+    public string RouteBasePath => "crm/v3/objects";
+}
+
 public class CustomObjectListAssociationsModel<T> : IHubSpotModel where T : CustomObjectAssociationModel, new()
 {
     [DataMember(Name = "results")]
@@ -241,5 +260,14 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
         _client.Execute<UpdateCustomObjectHubSpotModel>(path, entity, Method.PATCH, convertToPropertiesSchema: false);
         
         return string.Empty;
+    }
+
+    public T GetObject<T>(string schemaId, string entityId) where T : GetHubspotHoursMileageModel, new()
+    {
+        var path = $"{RouteBasePath}/{schemaId}/{entityId}";
+
+    var res = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: false);
+
+        return res;
     }
 }
