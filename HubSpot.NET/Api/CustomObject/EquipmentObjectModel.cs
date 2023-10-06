@@ -36,18 +36,6 @@ public class GetHubspotEquipmentObjectModel : IHubSpotModel
     [DataMember(Name = "fleet_identifier")]
     public string? FleetIdentifier { get; set; }
 
-    /*[DataMember(Name = "hs_all_accessible_team_ids")]
-    public List<int>? HsAllAccessibleTeamIds { get; set; }
-
-    [DataMember(Name = "hs_all_assigned_business_unit_ids")]
-    public List<int>? HsAllAssignedBusinessUnitIds { get; set; }
-
-    [DataMember(Name = "hs_all_owner_ids")]
-    public List<int>? HsAllOwnerIds { get; set; }
-
-    [DataMember(Name = "hs_all_team_ids")]
-    public List<int>? HsAllTeamIds { get; set; }*/
-
     [DataMember(Name = "hs_created_by_user_id")]
     public string? HsCreatedByUserId { get; set; }
 
@@ -56,9 +44,6 @@ public class GetHubspotEquipmentObjectModel : IHubSpotModel
 
     [DataMember(Name = "hs_lastmodifieddate")]
     public DateTime? HsLastModifiedDate { get; set; }
-
-   /* [DataMember(Name = "hs_merged_object_ids")]
-    public List<int>? HsMergedObjectIds { get; set; }*/
 
     [DataMember(Name = "hs_object_id")]
     public string? HsObjectId { get; set; }
@@ -83,16 +68,7 @@ public class GetHubspotEquipmentObjectModel : IHubSpotModel
 
     [DataMember(Name = "hs_updated_by_user_id")]
     public string? HsUpdatedByUserId { get; set; }
-
-    /*[DataMember(Name = "hs_user_ids_of_all_notification_followers")]
-    public List<int>? HsUserIdsOfAllNotificationFollowers { get; set; }
-
-    [DataMember(Name = "hs_user_ids_of_all_notification_unfollowers")]
-    public List<int>? HsUserIdsOfAllNotificationUnfollowers { get; set; }
-
-    [DataMember(Name = "hs_user_ids_of_all_owners")]
-    public List<int>? HsUserIdsOfAllOwners { get; set; }
-    */
+    
     [DataMember(Name = "hs_was_imported")]
     public bool? HsWasImported { get; set; }
 
