@@ -262,7 +262,7 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
         return string.Empty;
     }
 
-    public T GetObject<T>(string schemaId, string entityId) where T : GetHubspotHoursMileageModel, new()
+    public T GetEquipmentHourMileage<T>(string schemaId, string entityId) where T : GetHubspotHoursMileageModel, new()
     {
         var path = $"{RouteBasePath}/{schemaId}/{entityId}";
 
