@@ -109,7 +109,10 @@ namespace HubSpot.NET.Examples
             var newEquipmentId = api.CustomObjects.CreateWithDefaultAssociationToObject(newEquipment, "0-3", "9909067546");
             
             var getEquipment = api.CustomObjects.GetEquipmentDataById<GetHubspotEquipmentObjectModel>(id, newEquipmentId);
-            
+
+
+            var getEquipmentHours = api.CustomObjects.GetEquipmentDataById<GetHubspotEquipmentObjectModel>(id, newEquipmentId, "hoursmileage");
+
             var result3 = api.CustomObjects.GetAssociationsToCustomObject
                 <CustomObjectAssociationModel>("2-4390924", "3254092177",
                 "0-1", CancellationToken.None);
