@@ -125,7 +125,7 @@ public class CustomObjectHubSpotModel : IHubSpotModel
 
 public class GetHubspotHoursMileageModel : IHubSpotModel
 {
-    [DataMember(Name = "hoursMileage")]
+    [DataMember(Name = "hoursmileage")]
     public string HoursMileage { get; set; }
 
 
@@ -266,7 +266,9 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
     {
         var path = $"{RouteBasePath}/{schemaId}/{entityId}";
 
-    var res = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: false);
+        path = path.SetQueryParam("properties", "hoursmileage");
+
+        var res = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
 
         return res;
     }
