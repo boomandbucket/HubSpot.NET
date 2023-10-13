@@ -68,7 +68,8 @@ namespace HubSpot.NET.Examples
                     {"make", "Ford"},
                     {"model", "150" + DateTime.Now.Hour + DateTime.Now.Minute},
                     {"name", $"2015 Ford 150"},
-                    {"hoursmileage", $"1000" }
+                    {"hoursmileage", $"1000" },
+                    {"new_associated_deal" , new DateTime(2023, 10, 12, 0, 0, 0, DateTimeKind.Utc)}
                 },
                 Associations = new List<CreateCustomObjectHubSpotModel.Association>()
                 {
