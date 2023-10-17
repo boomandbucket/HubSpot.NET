@@ -157,7 +157,7 @@ public class HubspotEquipmentObjectModel : IHubSpotModel
     public string? ZipCode { get; set; }
 
     [DataMember(Name = "name")]
-    public string? Name { get; set; }
+    public virtual string? Name { get; set; } 
 
     [DataMember(Name = "model")]
     public string? Model { get; set; }
