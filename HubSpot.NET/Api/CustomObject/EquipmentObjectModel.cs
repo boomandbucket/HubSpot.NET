@@ -145,7 +145,7 @@ public class HubspotEquipmentObjectModel : IHubSpotModel
     public string? TimeBetweenPostedAndFirstBuyer { get; set; }
 
     [DataMember(Name = "warranty_eligible")]
-    public bool? WarrantyEligible { get; set; }
+    public string? WarrantyEligible { get; set; }
 
     [DataMember(Name = "year")]
     public string? Year { get; set; }
