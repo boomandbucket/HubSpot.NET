@@ -1,8 +1,12 @@
+using System.Net;
+using HubSpot.NET.Core;
+using RestSharp;
+using HubSpot.NET.Api.Owner.Dto;
+using HubSpot.NET.Core.Extensions;
+using HubSpot.NET.Core.Interfaces;
+
 namespace HubSpot.NET.Api.Owner
 {
-    using HubSpot.NET.Api.Owner.Dto;
-    using HubSpot.NET.Core.Extensions;
-    using HubSpot.NET.Core.Interfaces;
 
     public class HubSpotOwnerApi : IHubSpotOwnerApi
     {
@@ -31,6 +35,29 @@ namespace HubSpot.NET.Api.Owner
             }
 
             return _client.ExecuteList<OwnerListHubSpotModel<T>>(path, convertToPropertiesSchema: false);
+        }
+
+        /// <summary>
+        /// Gets a single owner by ID
+        /// </summary>
+        /// <param name="ownerId">ID of the owner</param>
+        /// <typeparam name="T">Implementation of OwnerHubSpotModel</typeparam>
+        /// <returns>The owner entity or null if the owner does not exist</returns>
+        public T GetById<T>(long ownerId) where T: OwnerHubSpotModel, new()
+        {
+            var path = $"{new OwnerHubSpotModel().RouteBasePath}/owners/{ownerId}";
+
+            try
+            {
+                var data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                return data;
+            }
+            catch (HubSpotException exception)
+            {
+                if (exception.ReturnedError.StatusCode == HttpStatusCode.NotFound)
+                    return null;
+                throw;
+            }
         }
     }
 }
