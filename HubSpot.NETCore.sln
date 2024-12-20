@@ -1,10 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35605.110
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubSpot.NET", "HubSpot.NET\HubSpot.NET.csproj", "{C74DC4A3-9CFF-476D-B090-19AF7DD7C679}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubSpot.NET.Examples", "HubSpot.NET.Examples\HubSpot.NET.Examples.csproj", "{937AB15D-21BF-4BE8-81CF-CE1CF224B052}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubSpot.NET.Tests", "HubSpot.NET.Tests\HubSpot.NET.Tests.csproj", "{10DF0B2D-6FD6-4CC7-A35D-D53B3C2AEC42}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		global.json = global.json
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A2163B42-E524-4629-BCD3-863E9A76A48A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{D98F0A34-0AA9-45F6-9322-AABB14AF9D39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +39,13 @@ Global
 		{10DF0B2D-6FD6-4CC7-A35D-D53B3C2AEC42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10DF0B2D-6FD6-4CC7-A35D-D53B3C2AEC42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10DF0B2D-6FD6-4CC7-A35D-D53B3C2AEC42}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C74DC4A3-9CFF-476D-B090-19AF7DD7C679} = {A2163B42-E524-4629-BCD3-863E9A76A48A}
+		{937AB15D-21BF-4BE8-81CF-CE1CF224B052} = {A2163B42-E524-4629-BCD3-863E9A76A48A}
+		{10DF0B2D-6FD6-4CC7-A35D-D53B3C2AEC42} = {D98F0A34-0AA9-45F6-9322-AABB14AF9D39}
 	EndGlobalSection
 EndGlobal
