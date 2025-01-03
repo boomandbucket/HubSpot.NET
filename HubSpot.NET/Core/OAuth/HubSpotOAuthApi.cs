@@ -16,7 +16,7 @@
 
         public virtual string MidRoute => "oauth/v1/token";
 
-        private readonly Dictionary<OAuthScopes, string> OAuthScopeNameConversions = new Dictionary<OAuthScopes, string>
+        private readonly Dictionary<OAuthScopes, string> OAuthScopeNameConversions = new()
         {
             { OAuthScopes.Automation , "automation" },
             { OAuthScopes.BusinessIntelligence, "business-intelligence" },
@@ -44,7 +44,7 @@
 
         public HubSpotToken Authorize(string authCode, string redirectUri)
         {
-            RequestTokenHubSpotModel model = new RequestTokenHubSpotModel()
+            RequestTokenHubSpotModel model = new()
             {
                 ClientId = ClientId,
                 ClientSecret = _clientSecret,
@@ -58,7 +58,7 @@
 
         public HubSpotToken Refresh(string redirectUri, HubSpotToken token)
         {
-            RequestRefreshTokenHubSpotModel model = new RequestRefreshTokenHubSpotModel()
+            RequestRefreshTokenHubSpotModel model = new()
             {
                 ClientId = ClientId,
                 ClientSecret = _clientSecret,
@@ -78,9 +78,9 @@
 
         private HubSpotToken InitiateRequest<K>(K model, string basePath, params OAuthScopes[] scopes)
         {
-            RestClient client = new RestClient(basePath);
+            RestClient client = new(basePath);
 
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             foreach (OAuthScopes scope in scopes)
             {
                 if (builder.Length == 0)
@@ -89,18 +89,18 @@
                     builder.Append($"%20{OAuthScopeNameConversions[scope]}");
             }
 
-            RestRequest request = new RestRequest(MidRoute)
+            RestRequest request = new(MidRoute)
             {
-                JsonSerializer = new FakeSerializer()
+                //JsonSerializer = new FakeSerializer()
             };
 
             Dictionary<string, string> jsonPreStringPairs = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(model));
 
-            StringBuilder bodyBuilder = new StringBuilder();
+            StringBuilder bodyBuilder = new();
             foreach(KeyValuePair<string,string> pair in jsonPreStringPairs)
             {
                 if (bodyBuilder.Length > 0)
-                    bodyBuilder.Append("&");
+                    bodyBuilder.Append('&');
 
                 bodyBuilder.Append($"{pair.Key}={pair.Value}");
             }
@@ -111,7 +111,7 @@
             if (builder.Length > 0)
                 request.AddQueryParameter("scope", builder.ToString());
 
-            IRestResponse<HubSpotToken> serverReponse = client.Post<HubSpotToken>(request);
+            var serverReponse = client.ExecutePost<HubSpotToken>(request);
 
             if (serverReponse.ResponseStatus != ResponseStatus.Completed)
                 throw new HubSpotException("Server did not respond to authorization request. Content: " + serverReponse.Content, new HubSpotError(serverReponse.StatusCode, serverReponse.Content), serverReponse.Content);

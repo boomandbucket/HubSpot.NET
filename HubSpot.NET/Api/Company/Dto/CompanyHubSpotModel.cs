@@ -15,7 +15,7 @@ namespace HubSpot.NET.Api.Company.Dto
     {
         public CompanyHubSpotModel()
         {
-            Associations = new CompanyHubSpotAssociations();
+            Associations = new();
         }
         [DataMember(Name = "companyId")]
         [IgnoreDataMember]

@@ -23,7 +23,7 @@ public class HubSpotAssociationsApi : IHubSpotAssociationsApi
     {
         var associationPath =
             $"/crm/v4/objects/{objectType}/{objectId}/associations/default/{toObjectType}/{toObjectId}";
-        _client.Execute(associationPath, null, Method.PUT, convertToPropertiesSchema: false);
+        _client.Execute(associationPath, null, Method.Put, convertToPropertiesSchema: false);
         
     }
 
@@ -47,7 +47,7 @@ public class HubSpotAssociationsApi : IHubSpotAssociationsApi
             associationTypeId
         };
         var body = new[] {label};
-        _client.Execute(associationPath, body, Method.PUT, convertToPropertiesSchema: false);
+        _client.Execute(associationPath, body, Method.Put, convertToPropertiesSchema: false);
         
     }
     

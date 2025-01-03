@@ -13,10 +13,10 @@ namespace HubSpot.NET.Api.Company
         public int Limit { get; set; } = 100;
 
         [DataMember(Name = "requestOptions")]
-        public CompanySearchByDomainRequestOptions RequestOptions { get; set; } = new CompanySearchByDomainRequestOptions();
+        public CompanySearchByDomainRequestOptions RequestOptions { get; set; } = new();
 
         [DataMember(Name = "offset")]
-        public CompanySearchOffset Offset { get; set; } = new CompanySearchOffset();
+        public CompanySearchOffset Offset { get; set; } = new();
 
         public string RouteBasePath => "/companies/v2";
         public bool IsNameValue => true;
@@ -30,7 +30,7 @@ namespace HubSpot.NET.Api.Company
     public class CompanySearchByDomainRequestOptions
     {
         [DataMember(Name = "properties")]
-        public List<string> Properties { get; set; } = new List<string> { "domain", "name", "website" };
+        public List<string> Properties { get; set; } = new() { "domain", "name", "website" };
     }
 
     [DataContract]

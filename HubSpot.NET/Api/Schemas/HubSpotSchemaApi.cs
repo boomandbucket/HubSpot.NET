@@ -152,7 +152,7 @@ public class HubSpotSchemaApi : IHubSpotSchemaApi
     
     public SchemaListHubSpotModel<T> List<T>(ListRequestOptions opts = null) where T : SchemaHubSpotModel, new()
     {
-        opts ??= new ListRequestOptions();
+        opts ??= new();
 
         var path = $"{new SchemaHubSpotModel().RouteBasePath}"
             .SetQueryParam("count", opts.Limit);

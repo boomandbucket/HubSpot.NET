@@ -25,7 +25,7 @@
         public NoteHubSpotResponseModel Create(NoteHubSpotRequestModel entity)
         {
             var path = $"{entity.RouteBasePath}";
-            var data = _client.Execute<NoteHubSpotResponseModel>(path, entity, Method.POST, false);
+            var data = _client.Execute<NoteHubSpotResponseModel>(path, entity, Method.Post, false);
             return data;
         }
     }

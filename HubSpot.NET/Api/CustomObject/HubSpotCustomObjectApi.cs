@@ -109,7 +109,7 @@ public class CustomObjectHubSpotModel : IHubSpotModel
 
     [IgnoreDataMember]
     [JsonProperty(PropertyName = "properties")]
-    public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+    public Dictionary<string, string> Properties { get; set; } = new();
     public bool IsNameValue => false;
     public void ToHubSpotDataEntity(ref dynamic dataEntity)
     {
@@ -168,7 +168,7 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
     /// <returns></returns>
     public CustomObjectListHubSpotModel<T> List<T>(string idForCustomObject, ListRequestOptions opts = null) where T : CustomObjectHubSpotModel, new()
     {
-        opts ??= new ListRequestOptions();
+        opts ??= new();
 
         var path = $"{RouteBasePath}/{idForCustomObject}"
             .SetQueryParam("count", opts.Limit);
@@ -216,7 +216,7 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
         var path = $"{RouteBasePath}/{entity.SchemaId}";
 
         var response =
-            _client.Execute<CreateCustomObjectHubSpotModel>(path, entity, Method.POST, convertToPropertiesSchema: false);
+            _client.Execute<CreateCustomObjectHubSpotModel>(path, entity, Method.Post, convertToPropertiesSchema: false);
 
         
         if (response.Properties.TryGetValue("hs_object_id", out var parsedId))
@@ -237,7 +237,7 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
     {
         var path = $"{RouteBasePath}/{entity.SchemaId}/{entity.Id}";
 
-        _client.Execute<UpdateCustomObjectHubSpotModel>(path, entity, Method.PATCH, convertToPropertiesSchema: false);
+        _client.Execute<UpdateCustomObjectHubSpotModel>(path, entity, Method.Patch, convertToPropertiesSchema: false);
         
         return string.Empty;
     }
@@ -253,7 +253,7 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
 
         path = path.SetQueryParam("properties", properties); //properties is comma seperated value of properties to include
 
-        var res = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+        var res = _client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
 
         return res;
     }

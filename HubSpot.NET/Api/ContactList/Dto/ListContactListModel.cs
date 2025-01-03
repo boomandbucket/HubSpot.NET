@@ -8,7 +8,7 @@ namespace HubSpot.NET.Api.ContactList.Dto
     public class ListContactListModel : IHubSpotModel
     {
         [DataMember(Name = "lists")]
-        public List<ContactListModel> Lists { get; set; } = new List<ContactListModel>();
+        public List<ContactListModel> Lists { get; set; } = new();
         
         /// <summary>
         /// Gets or sets a value indicating whether more results are available.

@@ -24,7 +24,7 @@ namespace HubSpot.NET.Api.Files
         public FolderHubSpotModel CreateFolder(FolderHubSpotModel folder)
         {
             var path = $"{new FolderHubSpotModel().RouteBasePath}";
-            return _client.Execute<FolderHubSpotModel>(path, folder, Method.POST, false);
+            return _client.Execute<FolderHubSpotModel>(path, folder, Method.Post, false);
         }
         
         /// <summary>
@@ -36,7 +36,7 @@ namespace HubSpot.NET.Api.Files
         {
             var path = $"{new FileHubSpotRequestModel().RouteBasePath}/upload";
             var data = _client.ExecuteMultipart<FileHubSpotResponseModel>(path, entity.File, entity.Name,
-                new Dictionary<string, string>()
+                new()
                 {
                     {"folderPath", entity.FolderPath},
                     {"folderId", entity.FolderId},

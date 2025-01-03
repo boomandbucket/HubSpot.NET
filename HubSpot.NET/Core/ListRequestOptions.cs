@@ -61,6 +61,6 @@ namespace HubSpot.NET.Core
         /// </remarks>
         public virtual long? Offset { get; set; } = null;
 
-        public virtual List<string> PropertiesToInclude { get; set; } = new List<string>();
+        public virtual List<string> PropertiesToInclude { get; set; } = new();
     }
 }

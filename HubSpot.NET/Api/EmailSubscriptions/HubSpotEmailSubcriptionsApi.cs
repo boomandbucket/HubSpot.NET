@@ -43,7 +43,7 @@ namespace HubSpot.NET.Api.EmailSubscriptions
         {
             var path = $"{new SubscriptionTypeListHubSpotModel().RouteBasePath}/subscriptions/{email}";
 
-            return _client.Execute<SubscriptionStatusHubSpotModel>(path, Method.GET, false);
+            return _client.Execute<SubscriptionStatusHubSpotModel>(path, Method.Get, false);
         }
 
 
@@ -56,7 +56,7 @@ namespace HubSpot.NET.Api.EmailSubscriptions
         {
             var path = $"{new SubscriptionTypeListHubSpotModel().RouteBasePath}/subscriptions/{email}";
 
-            _client.Execute(path, new { unsubscribeFromAll = true }, Method.PUT, false);
+            _client.Execute(path, new { unsubscribeFromAll = true }, Method.Put, false);
         }
 
         /// <summary>
@@ -71,9 +71,9 @@ namespace HubSpot.NET.Api.EmailSubscriptions
 
             var model = new SubscriptionStatusUpdateHubSpotModel
             {
-                SubscriptionStatuses = new List<SubscriptionStatusDetailHubSpotModel>()
+                SubscriptionStatuses = new()
                 {
-                    new SubscriptionStatusDetailHubSpotModel()
+                    new()
                     {
                         Id = id,
                         Subscribed = false
@@ -81,7 +81,7 @@ namespace HubSpot.NET.Api.EmailSubscriptions
                 }
             };
 
-            _client.Execute(path, model, Method.PUT, false);
+            _client.Execute(path, model, Method.Put, false);
         }
 
 
@@ -112,10 +112,7 @@ namespace HubSpot.NET.Api.EmailSubscriptions
                     subscriptionBasis = basis;
                 }
 
-                if (subscriptionBasisExplanation == null)
-                {
-                    subscriptionBasisExplanation = basisExplanation;
-                }
+                subscriptionBasisExplanation ??= basisExplanation;
 
                 subscription.LegalBasis = subscriptionBasis;
                 subscription.LegalBasisExplanation = subscriptionBasisExplanation;
@@ -123,7 +120,7 @@ namespace HubSpot.NET.Api.EmailSubscriptions
 
             var model = new SubscribeHubSpotModel
             {
-                SubscriptionStatuses = new List<SubscribeStatusHubSpotModel>() { subscription }
+                SubscriptionStatuses = new() { subscription }
             };
             if (setPortalSubscriptionBasis)
             {
@@ -133,7 +130,7 @@ namespace HubSpot.NET.Api.EmailSubscriptions
 
             var path = $"{model.RouteBasePath}/{email}";
 
-            _client.Execute(path, model, Method.PUT, false);
+            _client.Execute(path, model, Method.Put, false);
         }
     }
 }

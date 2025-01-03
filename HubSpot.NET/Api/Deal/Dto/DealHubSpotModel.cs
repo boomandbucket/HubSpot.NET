@@ -18,7 +18,7 @@ namespace HubSpot.NET.Api.Deal.Dto
     {
         public DealHubSpotModel()
         {
-            Associations =  new DealHubSpotAssociations();
+            Associations =  new();
         }
         /// <summary>
         /// Contacts unique Id in HubSpot
