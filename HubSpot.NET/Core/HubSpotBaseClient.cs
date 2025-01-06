@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.RateLimiting;
 using HubSpot.NET.Core.Extensions;
 using HubSpot.NET.Core.Interfaces;
 using HubSpot.NET.Core.OAuth.Dto;
@@ -12,6 +14,7 @@ namespace HubSpot.NET.Core
     public sealed class HubSpotBaseClient : IHubSpotClient
     {
         private readonly RequestSerializer _serializer = new(new());
+        private readonly FixedWindowRateLimiter _rateLimiter;
         private RestClient _client;
 
         public static string BaseUrl { get => "https://api.hubapi.com"; }
@@ -31,6 +34,22 @@ namespace HubSpot.NET.Core
         }
 
         /// <summary>
+        /// Creates a HubSpot client with the authentication scheme HAPIKEY and a rate limiter.
+        /// </summary>
+        public HubSpotBaseClient(string privateAppKey, int ratePermitLimit, int rateQueueLimit, TimeSpan rateWindow) : this(privateAppKey)
+        {
+            var options = new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = ratePermitLimit,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = rateQueueLimit,
+                Window = rateWindow,
+                AutoReplenishment = true
+            };
+            _rateLimiter = new FixedWindowRateLimiter(options);
+        }
+
+        /// <summary>
         /// Creates a HubSpot client with the authentication scheme HAPIKEY.
         /// </summary>
         public HubSpotBaseClient(string privateAppKey)
@@ -38,6 +57,22 @@ namespace HubSpot.NET.Core
             _apiKey = privateAppKey;
             _mode = HubSpotAuthenticationMode.PRIVATE_APP_KEY;
             Initialise();
+        }
+
+        /// <summary>
+        /// Creates a HubSpot client with the authentication scheme OAUTH.
+        /// </summary>
+        public HubSpotBaseClient(HubSpotToken token, int ratePermitLimit, int rateQueueLimit, TimeSpan rateWindow) : this(token)
+        {
+            var options = new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = ratePermitLimit,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = rateQueueLimit,
+                Window = rateWindow,
+                AutoReplenishment = true
+            };
+            _rateLimiter = new FixedWindowRateLimiter(options);
         }
 
         /// <summary>
@@ -121,7 +156,7 @@ namespace HubSpot.NET.Core
             }
                
 
-            RestResponse<T> response = _client.Execute<T>(request);
+            RestResponse<T> response = ExecuteWithRateLimit<T>(request);
 
             T responseData = response.Data;
 
@@ -166,7 +201,7 @@ namespace HubSpot.NET.Core
             if (method != Method.Get && !string.IsNullOrWhiteSpace(json))
                 request.AddParameter("application/json", json, ParameterType.RequestBody);
 
-            RestResponse response = _client.Execute(request);
+            RestResponse response = ExecuteWithRateLimit(request);
 
             string responseData = response.Content;
 
@@ -216,5 +251,41 @@ namespace HubSpot.NET.Core
         /// Updates the OAuth token used by the client.
         /// </summary>
         public void UpdateToken(HubSpotToken token) => _token = token;
+
+        private RestResponse<T> ExecuteWithRateLimit<T>(RestRequest request)
+        {
+            if (_rateLimiter == null)
+                return _client.Execute<T>(request);
+
+            using var lease = _rateLimiter.AttemptAcquire();
+            if (lease.IsAcquired)
+            {
+                return _client.Execute<T>(request);
+            }
+            if (lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+            {
+                Thread.Sleep(retryAfter);
+                return _client.Execute<T>(request);
+            }
+            throw new Exception("Rate limit exceeded");
+        }
+
+        private RestResponse ExecuteWithRateLimit(RestRequest request)
+        {
+            if (_rateLimiter == null)
+                return _client.Execute(request);
+
+            using var lease = _rateLimiter.AttemptAcquire();
+            if (lease.IsAcquired)
+            {
+                return _client.Execute(request);
+            }
+            if (lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+            {
+                Thread.Sleep(retryAfter);
+                return _client.Execute(request);
+            }
+            throw new Exception("Rate limit exceeded");
+        }
     }
 }
