@@ -13,10 +13,6 @@ namespace HubSpot.NET.Api.Company.Dto
     [DataContract]
     public class CompanyHubSpotModel : IHubSpotModel
     {
-        public CompanyHubSpotModel()
-        {
-            Associations = new();
-        }
         [DataMember(Name = "companyId")]
         [IgnoreDataMember]
         public long? Id { get; set; }
@@ -48,7 +44,7 @@ namespace HubSpot.NET.Api.Company.Dto
         public bool IsNameValue => true;
 
         [IgnoreDataMember]
-        public CompanyHubSpotAssociations Associations { get; }
+        public CompanyHubSpotAssociations Associations { get; } = new();
 
         public virtual void ToHubSpotDataEntity(ref dynamic converted)
         {

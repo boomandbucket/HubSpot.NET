@@ -10,15 +10,8 @@ namespace HubSpot.NET.Api.Company
     using HubSpot.NET.Core.Interfaces;
     using RestSharp;
 
-    public class HubSpotCompanyApi : IHubSpotCompanyApi
+    public class HubSpotCompanyApi(IHubSpotClient client) : IHubSpotCompanyApi
     {
-        private readonly IHubSpotClient _client;
-
-        public HubSpotCompanyApi(IHubSpotClient client)
-        {
-            _client = client;
-        }
-
         /// <summary>
         /// Creates a Company entity
         /// </summary>
@@ -30,7 +23,7 @@ namespace HubSpot.NET.Api.Company
         {
             var path = $"{entity.RouteBasePath}/companies";
 
-            return _client.Execute<T>(path, entity, Method.Post, convertToPropertiesSchema: true);
+            return client.Execute<T>(path, entity, Method.Post, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -45,7 +38,7 @@ namespace HubSpot.NET.Api.Company
 
             try
             {
-                return _client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
+                return client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
              }
             catch (HubSpotException exception)
             {
@@ -71,7 +64,7 @@ namespace HubSpot.NET.Api.Company
             try
             {
 
-                CompanySearchResultModel<T> data = _client.ExecuteList<CompanySearchResultModel<T>>(path, options, Method.Post, convertToPropertiesSchema: true);
+                CompanySearchResultModel<T> data = client.ExecuteList<CompanySearchResultModel<T>>(path, options, Method.Post, convertToPropertiesSchema: true);
 
                 return data;
              }
@@ -96,7 +89,7 @@ namespace HubSpot.NET.Api.Company
             if (opts.Offset.HasValue)
                 path = path.SetQueryParam("offset", opts.Offset);
 
-			CompanyListHubSpotModel<T> data = _client.ExecuteList<CompanyListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
+			CompanyListHubSpotModel<T> data = client.ExecuteList<CompanyListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -114,7 +107,7 @@ namespace HubSpot.NET.Api.Company
 
             var path = $"{entity.RouteBasePath}/companies/{entity.Id}";
 
-            T data = _client.Execute<T>(path, entity, Method.Put, convertToPropertiesSchema: true);
+            T data = client.Execute<T>(path, entity, Method.Put, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -127,7 +120,7 @@ namespace HubSpot.NET.Api.Company
         {
             var path = $"{new CompanyHubSpotModel().RouteBasePath}/companies/{companyId}";
 
-            _client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
+            client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
 
         public CompanySearchHubSpotModel<T> Search<T>(SearchRequestOptions opts = null) where T : CompanyHubSpotModel, new()
@@ -136,7 +129,7 @@ namespace HubSpot.NET.Api.Company
 
             var path = "/crm/v3/objects/companies/search";
 
-			CompanySearchHubSpotModel<T> data = _client.ExecuteList<CompanySearchHubSpotModel<T>>(path, opts, Method.Post, convertToPropertiesSchema: true);
+			CompanySearchHubSpotModel<T> data = client.ExecuteList<CompanySearchHubSpotModel<T>>(path, opts, Method.Post, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -155,7 +148,7 @@ namespace HubSpot.NET.Api.Company
             var dealResults = new List<long>();
             do
             {
-                var dealAssociations = _client.ExecuteList<AssociationIdListHubSpotModel>(string.Format("{0}?limit=100{1}", companyPath, offSet == null ? null : "&offset=" + offSet), convertToPropertiesSchema: false);
+                var dealAssociations = client.ExecuteList<AssociationIdListHubSpotModel>(string.Format("{0}?limit=100{1}", companyPath, offSet == null ? null : "&offset=" + offSet), convertToPropertiesSchema: false);
                 if (dealAssociations.Results.Any())
                     dealResults.AddRange(dealAssociations.Results);
                 if (dealAssociations.HasMore)
@@ -174,7 +167,7 @@ namespace HubSpot.NET.Api.Company
             var contactResults = new List<long>();
             do
             {
-                var contactAssociations = _client.ExecuteList<AssociationIdListHubSpotModel>(string.Format("{0}?limit=100{1}", contactPath, offSet == null ? null : "&offset=" + offSet), convertToPropertiesSchema: false);
+                var contactAssociations = client.ExecuteList<AssociationIdListHubSpotModel>(string.Format("{0}?limit=100{1}", contactPath, offSet == null ? null : "&offset=" + offSet), convertToPropertiesSchema: false);
                 if (contactAssociations.Results.Any())
                     contactResults.AddRange(contactAssociations.Results);
                 if (contactAssociations.HasMore)

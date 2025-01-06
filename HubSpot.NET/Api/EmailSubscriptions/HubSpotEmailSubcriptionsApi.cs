@@ -71,14 +71,14 @@ namespace HubSpot.NET.Api.EmailSubscriptions
 
             var model = new SubscriptionStatusUpdateHubSpotModel
             {
-                SubscriptionStatuses = new()
-                {
+                SubscriptionStatuses =
+                [
                     new()
                     {
                         Id = id,
                         Subscribed = false
                     }
-                }
+                ]
             };
 
             _client.Execute(path, model, Method.Put, false);
@@ -120,7 +120,7 @@ namespace HubSpot.NET.Api.EmailSubscriptions
 
             var model = new SubscribeHubSpotModel
             {
-                SubscriptionStatuses = new() { subscription }
+                SubscriptionStatuses = [subscription]
             };
             if (setPortalSubscriptionBasis)
             {

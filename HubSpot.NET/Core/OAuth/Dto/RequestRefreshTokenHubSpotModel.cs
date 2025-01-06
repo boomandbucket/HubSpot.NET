@@ -6,7 +6,7 @@
     public class RequestRefreshTokenHubSpotModel
     {
         [DataMember(Name = "grant_type")]
-        public string GrantType { get; set; }
+        public string GrantType { get; set; } = "refresh_token";
 
         [DataMember(Name = "client_id")]
         public string ClientId { get; set; }
@@ -19,11 +19,5 @@
 
         [DataMember(Name = "refresh_token")]
         public string RefreshToken { get; set; }
-
-
-        public RequestRefreshTokenHubSpotModel()
-        {
-            GrantType = "refresh_token";
-        }
     }
 }

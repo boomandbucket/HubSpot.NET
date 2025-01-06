@@ -30,7 +30,7 @@ namespace HubSpot.NET.Api.Contact.Dto
 
         public ListRecentRequestOptions()
 		{
-            PropertiesToInclude = new() { "createdate", "lastmodifieddate", "firstname", "lastname", "email", "company" };
+            PropertiesToInclude = ["createdate", "lastmodifieddate", "firstname", "lastname", "email", "company"];
 		}
     }
 }

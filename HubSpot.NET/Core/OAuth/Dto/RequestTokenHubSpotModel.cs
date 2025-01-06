@@ -6,7 +6,7 @@
     public class RequestTokenHubSpotModel
     {
         [DataMember(Name = "grant_type")]
-        public string GrantType { get; set; }
+        public string GrantType { get; set; } = "authorization_code";
 
         [DataMember(Name = "client_id")]
         public string ClientId { get; set; }
@@ -19,10 +19,5 @@
 
         [DataMember(Name = "code")]
         public string Code { get; set; }
-
-        public RequestTokenHubSpotModel()
-        {
-            GrantType = "authorization_code";
-        }
     }
 }

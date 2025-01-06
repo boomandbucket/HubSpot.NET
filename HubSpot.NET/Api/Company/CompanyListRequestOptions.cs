@@ -30,7 +30,7 @@ namespace HubSpot.NET.Api.Company
     public class CompanySearchByDomainRequestOptions
     {
         [DataMember(Name = "properties")]
-        public List<string> Properties { get; set; } = new() { "domain", "name", "website" };
+        public List<string> Properties { get; set; } = ["domain", "name", "website"];
     }
 
     [DataContract]

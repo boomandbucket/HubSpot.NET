@@ -16,10 +16,6 @@ namespace HubSpot.NET.Api.Deal.Dto
     [DataContract]
     public class DealHubSpotModel : IHubSpotModel
     {
-        public DealHubSpotModel()
-        {
-            Associations =  new();
-        }
         /// <summary>
         /// Contacts unique Id in HubSpot
         /// </summary>
@@ -60,7 +56,7 @@ namespace HubSpot.NET.Api.Deal.Dto
         public bool? IsDeleted { get; set; }
 
         [IgnoreDataMember]
-        public DealHubSpotAssociations Associations { get; }
+        public DealHubSpotAssociations Associations { get; } = new();
 
         public string RouteBasePath => "/deals/v1";
         public bool IsNameValue => true;

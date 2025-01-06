@@ -141,15 +141,8 @@ namespace HubSpot.NET.Api.Schemas;
         public bool? HasUniqueValue { get; set; }
     }
 
-public class HubSpotSchemaApi : IHubSpotSchemaApi
+public class HubSpotSchemaApi(IHubSpotClient client) : IHubSpotSchemaApi
 {
-    private readonly IHubSpotClient _client;
-
-    public HubSpotSchemaApi(IHubSpotClient client)
-    {
-        _client = client;
-    }
-    
     public SchemaListHubSpotModel<T> List<T>(ListRequestOptions opts = null) where T : SchemaHubSpotModel, new()
     {
         opts ??= new();
@@ -157,7 +150,7 @@ public class HubSpotSchemaApi : IHubSpotSchemaApi
         var path = $"{new SchemaHubSpotModel().RouteBasePath}"
             .SetQueryParam("count", opts.Limit);
 
-        var response = _client.ExecuteList<SchemaListHubSpotModel<T>>(path, convertToPropertiesSchema: false);
+        var response = client.ExecuteList<SchemaListHubSpotModel<T>>(path, convertToPropertiesSchema: false);
         return response;
     }
 }

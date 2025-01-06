@@ -8,7 +8,7 @@ namespace HubSpot.NET.Api.ContactList.Dto
     public class ContactListUpdateModel : IHubSpotModel
     {
         [DataMember(Name = "vids")] 
-        public List<long> ContactIds = new();
+        public List<long> ContactIds = [];
 
         [IgnoreDataMember]
         public bool IsNameValue => false;

@@ -8,13 +8,13 @@ namespace HubSpot.NET.Api.ContactList.Dto
     public class ContactListUpdateResponseModel : IHubSpotModel
     {
         [DataMember(Name = "discarded")] 
-        public List<long> Discarded = new();
+        public List<long> Discarded = [];
 
         [DataMember(Name = "invalidVids")] 
-        public List<long> InvalidContactIds = new();
+        public List<long> InvalidContactIds = [];
 
         [DataMember(Name = "updated")] 
-        public List<long> UpdatedContactIds = new();
+        public List<long> UpdatedContactIds = [];
 
         [IgnoreDataMember]
         public bool IsNameValue => false;

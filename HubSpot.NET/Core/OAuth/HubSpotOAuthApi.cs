@@ -8,11 +8,10 @@
 	using Newtonsoft.Json;
 	using RestSharp;
 
-	public class HubSpotOAuthApi
+	public class HubSpotOAuthApi(string basePath, string clientId, string clientSecret)
     {
-        public string ClientId { get; protected set; }
-        private string _clientSecret;
-        private readonly string _basePath;
+        public string ClientId { get; protected set; } = clientId;
+        private string _clientSecret = clientSecret;
 
         public virtual string MidRoute => "oauth/v1/token";
 
@@ -35,13 +34,6 @@
         };
 
 
-        public HubSpotOAuthApi(string basePath, string clientId, string clientSecret)
-        {
-            _basePath = basePath;
-            ClientId = clientId;
-            _clientSecret = clientSecret;
-        }
-
         public HubSpotToken Authorize(string authCode, string redirectUri)
         {
             RequestTokenHubSpotModel model = new()
@@ -52,7 +44,7 @@
                 RedirectUri = redirectUri
             };
 
-            HubSpotToken token = InitiateRequest(model, _basePath);
+            HubSpotToken token = InitiateRequest(model, basePath);
             return token;
         }
 
@@ -66,7 +58,7 @@
                 RefreshToken = token.RefreshToken
             };
 
-            HubSpotToken refreshToken = InitiateRequest(model, _basePath);
+            HubSpotToken refreshToken = InitiateRequest(model, basePath);
             return refreshToken;
         }
 

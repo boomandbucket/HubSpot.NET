@@ -7,15 +7,8 @@ namespace HubSpot.NET.Api.Files
     using HubSpot.NET.Core.Interfaces;
     using RestSharp;
 
-    public class HubSpotCosFileApi : IHubSpotCosFileApi
+    public class HubSpotCosFileApi(IHubSpotClient client) : IHubSpotCosFileApi
     {
-        private readonly IHubSpotClient _client;
-
-        public HubSpotCosFileApi(IHubSpotClient client)
-        {
-            _client = client;
-        }
-
         /// <summary>
         /// Creates a folder within the File Manager
         /// </summary>
@@ -24,7 +17,7 @@ namespace HubSpot.NET.Api.Files
         public FolderHubSpotModel CreateFolder(FolderHubSpotModel folder)
         {
             var path = $"{new FolderHubSpotModel().RouteBasePath}";
-            return _client.Execute<FolderHubSpotModel>(path, folder, Method.Post, false);
+            return client.Execute<FolderHubSpotModel>(path, folder, Method.Post, false);
         }
         
         /// <summary>
@@ -35,7 +28,7 @@ namespace HubSpot.NET.Api.Files
         public FileHubSpotResponseModel UploadFile(FileHubSpotRequestModel entity)
         {
             var path = $"{new FileHubSpotRequestModel().RouteBasePath}/upload";
-            var data = _client.ExecuteMultipart<FileHubSpotResponseModel>(path, entity.File, entity.Name,
+            var data = client.ExecuteMultipart<FileHubSpotResponseModel>(path, entity.File, entity.Name,
                 new()
                 {
                     {"folderPath", entity.FolderPath},

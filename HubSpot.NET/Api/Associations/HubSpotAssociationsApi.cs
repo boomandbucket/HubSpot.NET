@@ -3,14 +3,8 @@ using RestSharp;
 
 namespace HubSpot.NET.Api.Associations;
 
-public class HubSpotAssociationsApi : IHubSpotAssociationsApi
+public class HubSpotAssociationsApi(IHubSpotClient client) : IHubSpotAssociationsApi
 {
-    private readonly IHubSpotClient _client;
-    public HubSpotAssociationsApi(IHubSpotClient client)
-    {
-        _client = client;
-    }
-    
     /// <summary>
     /// Adds the ability to associate via the default association
     /// See the PUT documentation here: https://developers.hubspot.com/docs/api/crm/associations
@@ -23,7 +17,7 @@ public class HubSpotAssociationsApi : IHubSpotAssociationsApi
     {
         var associationPath =
             $"/crm/v4/objects/{objectType}/{objectId}/associations/default/{toObjectType}/{toObjectId}";
-        _client.Execute(associationPath, null, Method.Put, convertToPropertiesSchema: false);
+        client.Execute(associationPath, null, Method.Put, convertToPropertiesSchema: false);
         
     }
 
@@ -47,7 +41,7 @@ public class HubSpotAssociationsApi : IHubSpotAssociationsApi
             associationTypeId
         };
         var body = new[] {label};
-        _client.Execute(associationPath, body, Method.Put, convertToPropertiesSchema: false);
+        client.Execute(associationPath, body, Method.Put, convertToPropertiesSchema: false);
         
     }
     

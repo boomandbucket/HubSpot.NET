@@ -20,11 +20,6 @@ namespace HubSpot.NET.Api.Contact.Dto
         /// <summary>
         /// (defaults to "DESC") The order results are ordered by with respect to <see cref="SortBy"/>.
         /// </summary>
-        public SortingOrderType Order { get; set; }
-
-        public ContactSearchRequestOptions()
-		{
-            Order = SortingOrderType.Descending;
-        }
+        public SortingOrderType Order { get; set; } = SortingOrderType.Descending;
     }
 }

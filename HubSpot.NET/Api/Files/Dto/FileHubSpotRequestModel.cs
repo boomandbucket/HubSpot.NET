@@ -52,7 +52,7 @@ namespace HubSpot.NET.Api.Files.Dto
     [DataContract]
     public class FileHubSpotRequestOptionsModel
     {
-        [StringRange(AllowableValues = new[] {"PUBLIC_INDEXABLE", "PRIVATE_INDEXABLE", "PRIVATE"},
+        [StringRange(AllowableValues = ["PUBLIC_INDEXABLE", "PRIVATE_INDEXABLE", "PRIVATE"],
             ErrorMessage = "Must be PUBLIC_INDEXABLE, PRIVATE_INDEXABLE, or PRIVATE")]
         [DataMember(Name = "access")]
         public string Access { get; set; } = "PRIVATE";
@@ -63,11 +63,11 @@ namespace HubSpot.NET.Api.Files.Dto
         [DataMember(Name="overwrite")]
         public bool Overwrite { get; set; }
         
-        [StringRange(AllowableValues = new[] { "REJECT", "RETURN_EXISTING", "NONE" }, ErrorMessage = "Must be REJECT, RETURN_EXISTING, or NONE")]
+        [StringRange(AllowableValues = ["REJECT", "RETURN_EXISTING", "NONE"], ErrorMessage = "Must be REJECT, RETURN_EXISTING, or NONE")]
         [DataMember(Name="duplicateValidationStrategy")]
         public string DuplicateValidationStrategy { get; set; }
         
-        [StringRange(AllowableValues = new[] { "ENTIRE_PORTAL", "EXACT_FOLDER" }, ErrorMessage = "Must be ENTIRE_PORTAL or EXACT_FOLDER")]
+        [StringRange(AllowableValues = ["ENTIRE_PORTAL", "EXACT_FOLDER"], ErrorMessage = "Must be ENTIRE_PORTAL or EXACT_FOLDER")]
         [DataMember(Name="duplicateValidationScope")]
         public string DuplicateValidationScope { get; set; }
     }
@@ -84,7 +84,7 @@ namespace HubSpot.NET.Api.Files.Dto
             }
 
             var msg =
-                $"Please enter one of the allowable values: {string.Join(", ", (AllowableValues ?? new string[] {"No allowable values found"}))}.";
+                $"Please enter one of the allowable values: {string.Join(", ", (AllowableValues ?? ["No allowable values found"]))}.";
             return new(msg);
         }
     }

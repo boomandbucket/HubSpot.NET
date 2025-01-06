@@ -13,7 +13,7 @@ namespace HubSpot.NET.Api.Properties.Dto
     [DataContract]
     public class PropertiesListHubSpotModel<T> : IHubSpotModel, ICollection<T> where T : IHubSpotModel
     {
-        private List<T> Properties { get; } = new();
+        private List<T> Properties { get; } = [];
 
         public string RouteBasePath
         {
