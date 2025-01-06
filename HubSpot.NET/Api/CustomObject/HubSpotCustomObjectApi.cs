@@ -171,15 +171,15 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
         opts ??= new();
 
         var path = $"{RouteBasePath}/{idForCustomObject}"
-            .SetQueryParam("count", opts.Limit);
+            .SetQueryParam("limit", opts.Limit);
 
         if (opts.PropertiesToInclude.Any())
-            path = path.SetQueryParam("property", opts.PropertiesToInclude);
+            path = path.SetQueryParam("properties", string.Join(',',opts.PropertiesToInclude));
 
         if (opts.Offset.HasValue)
-            path = path.SetQueryParam("vidOffset", opts.Offset);
+            path = path.SetQueryParam("after", opts.Offset);
 
-        var response = _client.ExecuteList<CustomObjectListHubSpotModel<T>>(path, convertToPropertiesSchema: false);
+        var response = _client.ExecuteList<CustomObjectListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
         return response;
     }
 
@@ -198,7 +198,7 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
     {
         var path = $"{RouteBasePath}/{objectTypeId}/{customObjectId}/associations/{idForDesiredAssociation}";
 
-        var response = _client.ExecuteList<CustomObjectListAssociationsModel<T>>(path, convertToPropertiesSchema:  false);
+        var response = _client.ExecuteList<CustomObjectListAssociationsModel<T>>(path, convertToPropertiesSchema:  true);
         return response;
     }
 
@@ -216,7 +216,7 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
         var path = $"{RouteBasePath}/{entity.SchemaId}";
 
         var response =
-            _client.Execute<CreateCustomObjectHubSpotModel>(path, entity, Method.Post, convertToPropertiesSchema: false);
+            _client.Execute<CreateCustomObjectHubSpotModel>(path, entity, Method.Post, convertToPropertiesSchema: true);
 
         
         if (response.Properties.TryGetValue("hs_object_id", out var parsedId))
@@ -237,7 +237,7 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
     {
         var path = $"{RouteBasePath}/{entity.SchemaId}/{entity.Id}";
 
-        _client.Execute<UpdateCustomObjectHubSpotModel>(path, entity, Method.Patch, convertToPropertiesSchema: false);
+        _client.Execute<UpdateCustomObjectHubSpotModel>(path, entity, Method.Patch, convertToPropertiesSchema: true);
         
         return string.Empty;
     }
