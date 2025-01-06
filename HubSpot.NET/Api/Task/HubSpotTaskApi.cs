@@ -10,15 +10,8 @@ namespace HubSpot.NET.Api.Task
     using HubSpot.NET.Core.Interfaces;
     using RestSharp;
 
-    public class HubSpotTaskApi : IHubSpotTaskApi
+    public class HubSpotTaskApi(IHubSpotClient client) : IHubSpotTaskApi
     {
-        private readonly IHubSpotClient _client;
-
-        public HubSpotTaskApi(IHubSpotClient client)
-        {
-            _client = client;
-        }
-
         /// <summary>
         /// Creates a Task entity
         /// </summary>
@@ -30,7 +23,7 @@ namespace HubSpot.NET.Api.Task
         {
             string path = $"{entity.RouteBasePath}";
 
-            return _client.Execute<T>(path, entity, Method.POST, SerialisationType.PropertyBag);
+            return client.Execute<T>(path, entity, Method.Post, SerialisationType.PropertyBag);
         }
 
         /// <summary>
@@ -43,15 +36,19 @@ namespace HubSpot.NET.Api.Task
         {
             string path = $"{new T().RouteBasePath}/{taskId}";
 
-            if (propertiesToInclude == null)
-                propertiesToInclude = new List<string> { "hs_task_subject", "hubspot_owner_id", "hs_task_body", "hs_task_status", "hs_task_priority", "hs_task_type", "hs_timestamp" };
+            propertiesToInclude ??=
+            [
+                "hs_task_subject", "hubspot_owner_id", "hs_task_body", "hs_task_status", "hs_task_priority",
+                "hs_task_type",
+                "hs_timestamp"
+            ];
 
             if (propertiesToInclude.Any())
                 path = path.SetQueryParam("properties", propertiesToInclude);
 
             try
             {
-                return _client.Execute<T>(path, Method.GET, SerialisationType.PropertyBag);
+                return client.Execute<T>(path, Method.Get, SerialisationType.PropertyBag);
              }
             catch (HubSpotException exception)
             {
@@ -63,8 +60,7 @@ namespace HubSpot.NET.Api.Task
 
         public TaskListHubSpotModel<T> List<T>(ListRequestOptions opts = null) where T: TaskHubSpotModel, new()
         {
-            if (opts == null)
-                opts = new ListRequestOptions();
+            opts ??= new();
 
             string path = $"{new T().RouteBasePath}"
                 .SetQueryParam("count", opts.Limit);
@@ -75,7 +71,7 @@ namespace HubSpot.NET.Api.Task
             if (opts.Offset.HasValue)
                 path = path.SetQueryParam("after", opts.Offset);
 
-            TaskListHubSpotModel<T> data = _client.ExecuteList<TaskListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
+            TaskListHubSpotModel<T> data = client.ExecuteList<TaskListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -94,7 +90,7 @@ namespace HubSpot.NET.Api.Task
             long entityId = entity.Id.Value;
             string path = $"{entity.RouteBasePath}/{entity.Id}";
 
-            T data = _client.Execute<T>(path, entity, Method.PATCH, SerialisationType.PropertyBag);
+            T data = client.Execute<T>(path, entity, Method.Patch, SerialisationType.PropertyBag);
             // this just undoes some dirty meddling
             entity.Id = entityId;
 
@@ -109,7 +105,7 @@ namespace HubSpot.NET.Api.Task
         {
             var path = $"{new TaskHubSpotModel().RouteBasePath}/{taskId}";
 
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
     }
 }

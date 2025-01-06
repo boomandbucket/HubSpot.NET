@@ -136,7 +136,7 @@ namespace HubSpot.NET.Core.Requests
                 var expandoEntry = entry as ExpandoObject;
                 var dto = ConvertSingleEntity(expandoEntry, Activator.CreateInstance(genericEntityType));
                 // add entity to list
-                listAddMethod.Invoke(listInstance, new[] { dto });
+                listAddMethod.Invoke(listInstance, [dto]);
             }
             // assign our reflected list instance onto the data object
             dataTargetProp.SetValue(data, listInstance);

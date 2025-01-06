@@ -12,16 +12,9 @@
     using HubSpot.NET.Core.Interfaces;
     using RestSharp;
 
-   public class HubSpotContactApi : IHubSpotContactApi
-    {
-        private readonly IHubSpotClient _client;
-
-        public HubSpotContactApi(IHubSpotClient client)
-        {
-            _client = client;
-        }
-
-        /// <summary>
+   public class HubSpotContactApi(IHubSpotClient client) : IHubSpotContactApi
+   {
+       /// <summary>
         /// Creates a contact entity
         /// </summary>
         /// <typeparam name="T">Implementation of ContactHubSpotModel</typeparam>
@@ -31,7 +24,7 @@
         public T Create<T>(T entity) where T : ContactHubSpotModel, new()
         {
             var path = $"{entity.RouteBasePath}/contact";
-            return _client.Execute<T>(path, entity, Method.POST, convertToPropertiesSchema: true);
+            return client.Execute<T>(path, entity, Method.Post, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -43,7 +36,7 @@
         public T CreateOrUpdate<T>(T entity) where T : ContactHubSpotModel, new()
         {
             var path = $"{entity.RouteBasePath}/contact/createOrUpdate/email/{entity.Email}/";
-            return _client.Execute<T>(path, entity, Method.POST, convertToPropertiesSchema: true);
+            return client.Execute<T>(path, entity, Method.Post, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -58,7 +51,7 @@
 
             try
             {
-                T data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                T data = client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
                 return data;
              }
             catch (HubSpotException exception)
@@ -81,7 +74,7 @@
 
             try
             {
-                T data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                T data = client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
                 return data;
              }
             catch (HubSpotException exception)
@@ -104,7 +97,7 @@
 
             try
             {
-                T data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                T data = client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
                 return data;
             }
             catch (HubSpotException exception)
@@ -124,8 +117,7 @@
         /// <returns>A list of contacts</returns>
         public ContactListHubSpotModel<T> List<T>(ListRequestOptions opts = null) where T : ContactHubSpotModel, new()
         {
-            if (opts == null)
-                opts = new ListRequestOptions();
+            opts ??= new();
 
             var path = $"{new ContactHubSpotModel().RouteBasePath}/lists/all/contacts/all"
                 .SetQueryParam("count", opts.Limit);
@@ -136,7 +128,7 @@
             if (opts.Offset.HasValue)
                 path = path.SetQueryParam("vidOffset", opts.Offset);
 
-			ContactListHubSpotModel<T> data = _client.ExecuteList<ContactListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
+			ContactListHubSpotModel<T> data = client.ExecuteList<ContactListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -153,7 +145,7 @@
 
             var path = $"{contact.RouteBasePath}/contact/vid/{contact.Id}/profile";
 
-            _client.Execute(path, contact, Method.POST, convertToPropertiesSchema: true);
+            client.Execute(path, contact, Method.Post, convertToPropertiesSchema: true);
         }
         
         /// <summary>
@@ -164,7 +156,7 @@
         {
             var path = $"{new ContactHubSpotModel().RouteBasePath}/contact/vid/{contactId}";
 
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -177,7 +169,7 @@
         {
             var path =  $"{new T().RouteBasePath}/contact/batch";
 
-            _client.ExecuteBatch(path, contacts.Select(c => (object) c).ToList(), Method.POST, convertToPropertiesSchema: true);
+            client.ExecuteBatch(path, contacts.Select(c => (object) c).ToList(), Method.Post, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -185,8 +177,7 @@
         /// </summary>
         public ContactListHubSpotModel<T> RecentlyUpdated<T>(ListRecentRequestOptions opts = null) where T : ContactHubSpotModel, new()
         {
-            if (opts == null)
-                opts = new ListRecentRequestOptions();
+            opts ??= new();
 
             var path = $"{new ContactHubSpotModel().RouteBasePath}/lists/recently_updated/contacts/recent"
                 .SetQueryParam("count", opts.Limit);
@@ -206,7 +197,7 @@
             
             path = path.SetQueryParam("showListMemberships", opts.ShowListMemberships);
 
-			ContactListHubSpotModel<T> data = _client.ExecuteList<ContactListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: true);
+			ContactListHubSpotModel<T> data = client.ExecuteList<ContactListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -214,8 +205,7 @@
         public ContactSearchHubSpotModel<T> Search<T>(ContactSearchRequestOptions opts = null)
             where T : ContactHubSpotModel, new()
         {
-            if (opts == null)
-                opts = new ContactSearchRequestOptions();
+            opts ??= new();
 
             var path = $"{new T().RouteBasePath}/search/query"
                 .SetQueryParam("q", opts.Query)
@@ -240,7 +230,7 @@
                 path = path.SetQueryParam("order", description);
             }
 
-            ContactSearchHubSpotModel<T> data = _client.ExecuteList<ContactSearchHubSpotModel<T>>(path, convertToPropertiesSchema: true);
+            ContactSearchHubSpotModel<T> data = client.ExecuteList<ContactSearchHubSpotModel<T>>(path, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -250,8 +240,7 @@
         /// </summary>
         public ContactListHubSpotModel<T> RecentlyCreated<T>(ListRecentRequestOptions opts = null) where T : ContactHubSpotModel, new()
         {
-            if (opts == null)
-                opts = new ListRecentRequestOptions();
+            opts ??= new();
 
             var path = $"{new ContactHubSpotModel().RouteBasePath}/lists/all/contacts/recent"
                 .SetQueryParam("count", opts.Limit);
@@ -271,7 +260,7 @@
             
             path = path.SetQueryParam("showListMemberships", opts.ShowListMemberships);
 
-			ContactListHubSpotModel<T> data = _client.ExecuteList<ContactListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: true);
+			ContactListHubSpotModel<T> data = client.ExecuteList<ContactListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: true);
 
             return data;
         }

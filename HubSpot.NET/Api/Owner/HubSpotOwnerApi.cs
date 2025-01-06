@@ -8,15 +8,8 @@ using HubSpot.NET.Core.Interfaces;
 namespace HubSpot.NET.Api.Owner
 {
 
-    public class HubSpotOwnerApi : IHubSpotOwnerApi
+    public class HubSpotOwnerApi(IHubSpotClient client) : IHubSpotOwnerApi
     {
-        private readonly IHubSpotClient _client;
-
-        public HubSpotOwnerApi(IHubSpotClient client)
-        {
-            _client = client;
-        }
-
         /// <summary>
         /// Gets all owners within your HubSpot account
         /// </summary>
@@ -34,7 +27,7 @@ namespace HubSpot.NET.Api.Owner
                     path = path.SetQueryParam("email", opts.EmailAddress);
             }
 
-            return _client.ExecuteList<OwnerListHubSpotModel<T>>(path, convertToPropertiesSchema: false);
+            return client.ExecuteList<OwnerListHubSpotModel<T>>(path, convertToPropertiesSchema: false);
         }
 
         /// <summary>
@@ -49,7 +42,7 @@ namespace HubSpot.NET.Api.Owner
 
             try
             {
-                var data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: false);
+                var data = client.Execute<T>(path, Method.Get, convertToPropertiesSchema: false);
                 return data;
             }
             catch (HubSpotException exception)

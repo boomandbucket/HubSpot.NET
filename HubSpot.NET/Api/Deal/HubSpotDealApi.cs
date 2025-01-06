@@ -10,15 +10,8 @@
     using HubSpot.NET.Core.Interfaces;
     using RestSharp;
 
-    public class HubSpotDealApi : IHubSpotDealApi
+    public class HubSpotDealApi(IHubSpotClient client) : IHubSpotDealApi
     {
-        private readonly IHubSpotClient _client;
-
-        public HubSpotDealApi(IHubSpotClient client)
-        {
-            _client = client;
-        }
-
         /// <summary>
         /// Creates a deal entity
         /// </summary>
@@ -28,7 +21,7 @@
         public T Create<T>(T entity) where T : DealHubSpotModel, new()
         {
             var path = $"{entity.RouteBasePath}/deal";
-            var data = _client.Execute<T>(path, entity, Method.POST, convertToPropertiesSchema: true);
+            var data = client.Execute<T>(path, entity, Method.Post, convertToPropertiesSchema: true);
             return data;
         }
 
@@ -44,7 +37,7 @@
 
             try
             {
-                var data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                var data = client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
                 return data;
             }
             catch (HubSpotException exception)
@@ -68,7 +61,7 @@
 
             var path = $"{entity.RouteBasePath}/deal/{entity.Id}";
 
-            var data = _client.Execute<T>(path, entity, method: Method.PUT, convertToPropertiesSchema: true);
+            var data = client.Execute<T>(path, entity, method: Method.Put, convertToPropertiesSchema: true);
             return data;
         }
 
@@ -80,8 +73,7 @@
         /// <returns>List of deals</returns>
         public DealListHubSpotModel<T> List<T>(bool includeAssociations, ListRequestOptions opts = null) where T : DealHubSpotModel, new()
         {
-            if (opts == null)
-                opts = new ListRequestOptions(250);
+            opts ??= new(250);
 
             var path = $"{new DealListHubSpotModel<T>().RouteBasePath}/deal/paged"
                 .SetQueryParam("limit", opts.Limit);
@@ -95,7 +87,7 @@
             if (opts.PropertiesToInclude.Any())
                 path = path.SetQueryParam("properties", opts.PropertiesToInclude);
 
-            var data = _client.ExecuteList<DealListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
+            var data = client.ExecuteList<DealListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -112,8 +104,7 @@
         /// <returns>List of deals</returns>
         public DealListHubSpotModel<T> ListAssociated<T>(bool includeAssociations, long hubId, ListRequestOptions opts = null, string objectName = "contact") where T : DealHubSpotModel, new()
         {
-            if (opts == null)
-                opts = new ListRequestOptions();
+            opts ??= new();
 
             var path = $"{new DealListHubSpotModel<T>().RouteBasePath}/deal/associated/{objectName}/{hubId}/paged"
                 .SetQueryParam("limit", opts.Limit);
@@ -127,7 +118,7 @@
             if (opts.PropertiesToInclude.Any())
                 path = path.SetQueryParam("properties", opts.PropertiesToInclude);
 
-            var data = _client.ExecuteList<DealListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: true);
+            var data = client.ExecuteList<DealListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -140,7 +131,7 @@
         {
             var path = $"{new DealHubSpotModel().RouteBasePath}/deal/{dealId}";
 
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -152,8 +143,7 @@
         public DealRecentListHubSpotModel<T> RecentlyCreated<T>(DealRecentRequestOptions opts = null) where T : DealHubSpotModel, new()
         {
 
-            if (opts == null)
-                opts = new DealRecentRequestOptions();
+            opts ??= new();
 
             var path = $"{new DealRecentListHubSpotModel<T>().RouteBasePath}/deal/recent/created"
                 .SetQueryParam("count", opts.Limit);
@@ -167,7 +157,7 @@
             if (!string.IsNullOrEmpty(opts.Since))
                 path = path.SetQueryParam("since", opts.Since);
 
-            var data = _client.ExecuteList<DealRecentListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
+            var data = client.ExecuteList<DealRecentListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -180,8 +170,7 @@
         /// <returns>List of deals</returns>
         public DealRecentListHubSpotModel<T> RecentlyUpdated<T>(DealRecentRequestOptions opts = null) where T : DealHubSpotModel, new()
         {
-            if (opts == null)
-                opts = new DealRecentRequestOptions();
+            opts ??= new();
 
             var path = $"{new DealRecentListHubSpotModel<T>().RouteBasePath}/deal/recent/modified"
                 .SetQueryParam("count", opts.Limit);
@@ -195,7 +184,7 @@
             if (!string.IsNullOrEmpty(opts.Since))
                 path = path.SetQueryParam("since", opts.Since);
 
-            var data = _client.ExecuteList<DealRecentListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
+            var data = client.ExecuteList<DealRecentListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -208,12 +197,11 @@
         /// <returns>List of deals</returns>
         public SearchHubSpotModel<T> Search<T>(SearchRequestOptions opts = null) where T : DealHubSpotModel, new()
         {
-            if (opts == null)
-                opts = new SearchRequestOptions();
+            opts ??= new();
 
             var path = "/crm/v3/objects/deals/search";
 
-            var data = _client.ExecuteList<SearchHubSpotModel<T>>(path, opts, Method.POST, convertToPropertiesSchema: true);
+            var data = client.ExecuteList<SearchHubSpotModel<T>>(path, opts, Method.Post, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -228,14 +216,14 @@
         {
             var path = "/crm-associations/v1/associations";
 
-            _client.Execute(path, new
+            client.Execute(path, new
             {
                 fromObjectId = entity.Id,
                 toObjectId = companyId,
                 category = "HUBSPOT_DEFINED",
                 definitionId = 5 // see https://legacydocs.hubspot.com/docs/methods/crm-associations/crm-associations-overview
-            }, method: Method.PUT, convertToPropertiesSchema: true);
-            entity.Associations.AssociatedCompany = new[] { companyId };
+            }, method: Method.Put, convertToPropertiesSchema: true);
+            entity.Associations.AssociatedCompany = [companyId];
             return entity;
         }
 
@@ -249,14 +237,14 @@
         {
             var path = "/crm-associations/v1/associations";
 
-            _client.Execute(path, new
+            client.Execute(path, new
             {
                 fromObjectId = entity.Id,
                 toObjectId = contactId,
                 category = "HUBSPOT_DEFINED",
                 definitionId = 3 // see https://legacydocs.hubspot.com/docs/methods/crm-associations/crm-associations-overview
-            }, method: Method.PUT, convertToPropertiesSchema: true);
-            entity.Associations.AssociatedContacts = new[] { contactId };
+            }, method: Method.Put, convertToPropertiesSchema: true);
+            entity.Associations.AssociatedContacts = [contactId];
             return entity;
         }
 
@@ -274,7 +262,7 @@
             var companyResults = new List<long>();
             do
             {
-                var companyAssociations = _client.ExecuteList<AssociationIdListHubSpotModel>(string.Format("{0}?limit=100{1}", companyPath, offSet == null ? null : "&offset=" + offSet), convertToPropertiesSchema: false);
+                var companyAssociations = client.ExecuteList<AssociationIdListHubSpotModel>(string.Format("{0}?limit=100{1}", companyPath, offSet == null ? null : "&offset=" + offSet), convertToPropertiesSchema: false);
                 if (companyAssociations.Results.Any())
                     companyResults.AddRange(companyAssociations.Results);
                 if (companyAssociations.HasMore)
@@ -293,7 +281,7 @@
             var contactResults = new List<long>();
             do
             {
-                var contactAssociations = _client.ExecuteList<AssociationIdListHubSpotModel>(string.Format("{0}?limit=100{1}", contactPath, offSet == null ? null : "&offset=" + offSet), convertToPropertiesSchema: false);
+                var contactAssociations = client.ExecuteList<AssociationIdListHubSpotModel>(string.Format("{0}?limit=100{1}", contactPath, offSet == null ? null : "&offset=" + offSet), convertToPropertiesSchema: false);
                 if (contactAssociations.Results.Any())
                     contactResults.AddRange(contactAssociations.Results);
                 if (contactAssociations.HasMore)

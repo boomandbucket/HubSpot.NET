@@ -9,7 +9,7 @@ namespace HubSpot.NET.Core
 {
     public static class RestSharpExtensions
     {
-        public static bool IsSuccessful(this IRestResponse response)
+        public static bool IsSuccessful(this RestResponse response)
         {
             return (int) response.StatusCode >= 200 
                    && (int) response.StatusCode <= 299 

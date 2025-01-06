@@ -19,7 +19,7 @@ namespace HubSpot.NET.Core.Requests
         /// </summary> 
         protected RequestSerializer()
         {
-            _jsonSerializerSettings = new JsonSerializerSettings
+            _jsonSerializerSettings = new()
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 Converters = new List<JsonConverter> { new StringEnumConverter() },

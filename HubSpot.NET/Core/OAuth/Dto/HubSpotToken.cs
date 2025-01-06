@@ -16,11 +16,6 @@
         public int ExpiresIn { get; set; }
 
         [JsonIgnore]
-        public DateTimeOffset Created { get; private set; }
-
-        public HubSpotToken()
-        {
-            Created = DateTimeOffset.Now;
-        }
+        public DateTimeOffset Created { get; private set; } = DateTimeOffset.Now;
     }
 }

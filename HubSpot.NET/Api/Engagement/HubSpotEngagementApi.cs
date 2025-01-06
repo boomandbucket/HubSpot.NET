@@ -8,15 +8,8 @@
     using HubSpot.NET.Core.Interfaces;
     using RestSharp;
 
-    public class HubSpotEngagementApi : IHubSpotEngagementApi
+    public class HubSpotEngagementApi(IHubSpotClient client) : IHubSpotEngagementApi
     {
-        private readonly IHubSpotClient _client;
-
-        public HubSpotEngagementApi(IHubSpotClient client)
-        {
-            _client = client;
-        }
-
         /// <summary>
         /// Creates an engagement
         /// </summary>
@@ -25,7 +18,7 @@
         public EngagementHubSpotModel Create(EngagementHubSpotModel entity)
         {
             var path = $"{entity.RouteBasePath}/engagements";
-            var data = _client.Execute<EngagementHubSpotModel>(path, entity, Method.POST, false);
+            var data = client.Execute<EngagementHubSpotModel>(path, entity, Method.Post, false);
             return data;
         }
 
@@ -42,7 +35,7 @@
 
             var path = $"{entity.RouteBasePath}/engagements/{entity.Engagement.Id}";
 
-            _client.Execute(path, entity, Method.PATCH, false);
+            client.Execute(path, entity, Method.Patch, false);
         }
 
         /// <summary>
@@ -56,7 +49,7 @@
 
             try
             {
-                var data = _client.Execute<EngagementHubSpotModel>(path, Method.GET, false);
+                var data = client.Execute<EngagementHubSpotModel>(path, Method.Get, false);
                 return data;
             }
             catch (HubSpotException exception)
@@ -74,10 +67,7 @@
         /// <returns>List of engagements, with additional metadata, e.g. total</returns>
         public EngagementListHubSpotModel<T> List<T>(EngagementListRequestOptions opts = null) where T: EngagementHubSpotModel, new()
         {
-            if (opts == null)
-            {
-                opts = new EngagementListRequestOptions();
-            }
+            opts ??= new();
 
             var path = $"{new EngagementHubSpotModel().RouteBasePath}/engagements/paged".SetQueryParam("limit", opts.Limit);
 
@@ -86,7 +76,7 @@
                 path = path.SetQueryParam("offset", opts.Offset);
             }
 
-            var data = _client.ExecuteList<EngagementListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: false);
+            var data = client.ExecuteList<EngagementListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: false);
             return data;
         }
 
@@ -97,10 +87,7 @@
         /// <returns>List of engagements, with additional metadata, e.g. total</returns>
         public EngagementListHubSpotModel<T> ListRecent<T>(EngagementListRequestOptions opts = null) where T : EngagementHubSpotModel, new()
         {
-            if (opts == null)
-            {
-                opts = new EngagementListRequestOptions();
-            }
+            opts ??= new();
             var path = $"{new EngagementHubSpotModel().RouteBasePath}/engagements/recent/modified".SetQueryParam("count", opts.Limit);
 
             if (opts.Offset.HasValue)
@@ -108,7 +95,7 @@
                 path = path.SetQueryParam("offset", opts.Offset);
             }
 
-            var data = _client.ExecuteList<EngagementListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: false);
+            var data = client.ExecuteList<EngagementListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: false);
             return data;
         }
 
@@ -120,7 +107,7 @@
         {
             var path = $"{new EngagementHubSpotModel().RouteBasePath}/engagements/{engagementId}";
 
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -133,7 +120,7 @@
         {
             var path = $"{new EngagementHubSpotModel().RouteBasePath}/engagements/{engagementId}/associations/{objectType}/{objectId}";
 
-            _client.Execute(path, method: Method.PUT, convertToPropertiesSchema: true);
+            client.Execute(path, method: Method.Put, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -145,10 +132,7 @@
         /// <returns>List of associated engagements</returns>
         public EngagementListHubSpotModel<T> ListAssociated<T>(long objectId, string objectType, EngagementListRequestOptions opts = null) where T: EngagementHubSpotModel, new()
         {
-            if (opts == null)
-            {
-                opts = new EngagementListRequestOptions();
-            }
+            opts ??= new();
             var path = $"{new EngagementHubSpotModel().RouteBasePath}/engagements/associated/{objectType}/{objectId}/paged".SetQueryParam("limit", opts.Limit);
 
             if (opts.Offset.HasValue)
@@ -156,7 +140,7 @@
                 path = path.SetQueryParam("offset", opts.Offset);
             }
 
-            var data = _client.ExecuteList<EngagementListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: false);
+            var data = client.ExecuteList<EngagementListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: false);
             return data;
         }
 

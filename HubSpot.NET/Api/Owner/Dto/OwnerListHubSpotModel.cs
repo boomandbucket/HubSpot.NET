@@ -12,7 +12,7 @@ namespace HubSpot.NET.Api.Owner.Dto
     [DataContract]
     public class OwnerListHubSpotModel<T> : IHubSpotModel, ICollection<T> where T: OwnerHubSpotModel, new()
     {
-        private List<T> Owners { get; } = new List<T>();
+        private List<T> Owners { get; } = [];
 
         public string RouteBasePath => "/owners/v2";
 

@@ -8,15 +8,14 @@
 	using Newtonsoft.Json;
 	using RestSharp;
 
-	public class HubSpotOAuthApi
+	public class HubSpotOAuthApi(string basePath, string clientId, string clientSecret)
     {
-        public string ClientId { get; protected set; }
-        private string _clientSecret;
-        private readonly string _basePath;
+        public string ClientId { get; protected set; } = clientId;
+        private string _clientSecret = clientSecret;
 
         public virtual string MidRoute => "oauth/v1/token";
 
-        private readonly Dictionary<OAuthScopes, string> OAuthScopeNameConversions = new Dictionary<OAuthScopes, string>
+        private readonly Dictionary<OAuthScopes, string> OAuthScopeNameConversions = new()
         {
             { OAuthScopes.Automation , "automation" },
             { OAuthScopes.BusinessIntelligence, "business-intelligence" },
@@ -35,16 +34,9 @@
         };
 
 
-        public HubSpotOAuthApi(string basePath, string clientId, string clientSecret)
-        {
-            _basePath = basePath;
-            ClientId = clientId;
-            _clientSecret = clientSecret;
-        }
-
         public HubSpotToken Authorize(string authCode, string redirectUri)
         {
-            RequestTokenHubSpotModel model = new RequestTokenHubSpotModel()
+            RequestTokenHubSpotModel model = new()
             {
                 ClientId = ClientId,
                 ClientSecret = _clientSecret,
@@ -52,13 +44,13 @@
                 RedirectUri = redirectUri
             };
 
-            HubSpotToken token = InitiateRequest(model, _basePath);
+            HubSpotToken token = InitiateRequest(model, basePath);
             return token;
         }
 
         public HubSpotToken Refresh(string redirectUri, HubSpotToken token)
         {
-            RequestRefreshTokenHubSpotModel model = new RequestRefreshTokenHubSpotModel()
+            RequestRefreshTokenHubSpotModel model = new()
             {
                 ClientId = ClientId,
                 ClientSecret = _clientSecret,
@@ -66,7 +58,7 @@
                 RefreshToken = token.RefreshToken
             };
 
-            HubSpotToken refreshToken = InitiateRequest(model, _basePath);
+            HubSpotToken refreshToken = InitiateRequest(model, basePath);
             return refreshToken;
         }
 
@@ -78,9 +70,9 @@
 
         private HubSpotToken InitiateRequest<K>(K model, string basePath, params OAuthScopes[] scopes)
         {
-            RestClient client = new RestClient(basePath);
+            RestClient client = new(basePath);
 
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             foreach (OAuthScopes scope in scopes)
             {
                 if (builder.Length == 0)
@@ -89,18 +81,15 @@
                     builder.Append($"%20{OAuthScopeNameConversions[scope]}");
             }
 
-            RestRequest request = new RestRequest(MidRoute)
-            {
-                JsonSerializer = new FakeSerializer()
-            };
+            RestRequest request = new(MidRoute);
 
             Dictionary<string, string> jsonPreStringPairs = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(model));
 
-            StringBuilder bodyBuilder = new StringBuilder();
+            StringBuilder bodyBuilder = new();
             foreach(KeyValuePair<string,string> pair in jsonPreStringPairs)
             {
                 if (bodyBuilder.Length > 0)
-                    bodyBuilder.Append("&");
+                    bodyBuilder.Append('&');
 
                 bodyBuilder.Append($"{pair.Key}={pair.Value}");
             }
@@ -111,7 +100,7 @@
             if (builder.Length > 0)
                 request.AddQueryParameter("scope", builder.ToString());
 
-            IRestResponse<HubSpotToken> serverReponse = client.Post<HubSpotToken>(request);
+            var serverReponse = client.ExecutePost<HubSpotToken>(request);
 
             if (serverReponse.ResponseStatus != ResponseStatus.Completed)
                 throw new HubSpotException("Server did not respond to authorization request. Content: " + serverReponse.Content, new HubSpotError(serverReponse.StatusCode, serverReponse.Content), serverReponse.Content);

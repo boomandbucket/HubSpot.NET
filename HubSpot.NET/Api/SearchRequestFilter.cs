@@ -9,14 +9,9 @@ namespace HubSpot.NET.Api
         public string PropertyName { get; set; }
 
         [DataMember(Name = "operator")]
-        public SearchRequestFilterOperatorType Operator { get; set; }
+        public SearchRequestFilterOperatorType Operator { get; set; } = SearchRequestFilterOperatorType.EqualTo;
 
         [DataMember(Name = "value")]
         public string Value { get; set; }
-
-        public SearchRequestFilter()
-        {
-            Operator = SearchRequestFilterOperatorType.EqualTo;
-        }
     }
 }

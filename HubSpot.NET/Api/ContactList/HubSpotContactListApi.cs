@@ -33,10 +33,7 @@ namespace HubSpot.NET.Api.ContactList
         /// <returns>The data</returns>
         public ListContactListModel GetContactLists(ListOptions opts = null)
         {
-            if (opts == null)
-            {
-                opts = new ListOptions();
-            }
+            opts ??= new();
             
             var path = $"{new ListContactListModel().RouteBasePath}".SetQueryParam("count", opts.Limit);
             if (opts.Offset.HasValue)
@@ -56,10 +53,7 @@ namespace HubSpot.NET.Api.ContactList
         /// <returns>The data</returns>
         public ListContactListModel GetStaticContactLists(ListOptions opts = null)
         {
-            if (opts == null)
-            {
-                opts = new ListOptions();
-            }
+            opts ??= new();
             
             var path = $"{new ListContactListModel().RouteBasePath}/static".SetQueryParam("count", opts.Limit);
             if (opts.Offset.HasValue)
@@ -97,7 +91,7 @@ namespace HubSpot.NET.Api.ContactList
             var model = new ContactListUpdateModel();
             var path = $"{model.RouteBasePath}/{listId}/add";
             model.ContactIds.AddRange(contactIds);
-            var data = _client.Execute<ContactListUpdateResponseModel>(path, model, Method.POST, convertToPropertiesSchema: false);
+            var data = _client.Execute<ContactListUpdateResponseModel>(path, model, Method.Post, convertToPropertiesSchema: false);
 
             return data;
         }
@@ -113,7 +107,7 @@ namespace HubSpot.NET.Api.ContactList
             var model = new ContactListUpdateModel();
             var path = $"{model.RouteBasePath}/{listId}/remove";
             model.ContactIds.AddRange(contactIds);
-            var data = _client.Execute<ContactListUpdateResponseModel>(path, model, Method.POST, convertToPropertiesSchema: false);
+            var data = _client.Execute<ContactListUpdateResponseModel>(path, model, Method.Post, convertToPropertiesSchema: false);
 
             return data;
         }
@@ -125,7 +119,7 @@ namespace HubSpot.NET.Api.ContactList
         public void DeleteContactList(long listId)
         {
             var path = $"{new ContactListModel().RouteBasePath}/{listId}";
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            _client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -141,7 +135,7 @@ namespace HubSpot.NET.Api.ContactList
                 Dynamic = false
             };
             var path = $"{model.RouteBasePath}";
-            var data = _client.Execute<ContactListModel>(path, model, Method.POST, convertToPropertiesSchema: false);
+            var data = _client.Execute<ContactListModel>(path, model, Method.Post, convertToPropertiesSchema: false);
             return data;
         }
     }

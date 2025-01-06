@@ -1,16 +1,26 @@
+using System.Collections.Generic;
+using HubSpot.NET.Api.Associations.Dto;
 using HubSpot.NET.Core.Interfaces;
 using RestSharp;
 
 namespace HubSpot.NET.Api.Associations;
 
-public class HubSpotAssociationsApi : IHubSpotAssociationsApi
+public class HubSpotAssociationsApi(IHubSpotClient client) : IHubSpotAssociationsApi
 {
-    private readonly IHubSpotClient _client;
-    public HubSpotAssociationsApi(IHubSpotClient client)
+    /// <summary>
+    /// Gets associations to a specific object type
+    /// </summary>
+    /// <param name="objectType">the type of the object you're fetching associations (e.g. contact).</param>
+    /// <param name="objectId"> the ID of the record to find associations for.</param>
+    /// <param name="toObjectType"> the type of the object you are fetching associations for.</param>
+    public AssociationListHubSpotModel List(string objectType, string objectId, string toObjectType)
     {
-        _client = client;
+        var associationPath =
+            $"/crm/v4/objects/{objectType}/{objectId}/associations/{toObjectType}";
+        return client.ExecuteList<AssociationListHubSpotModel>(associationPath, null, Method.Get, convertToPropertiesSchema: false);
+
     }
-    
+
     /// <summary>
     /// Adds the ability to associate via the default association
     /// See the PUT documentation here: https://developers.hubspot.com/docs/api/crm/associations
@@ -23,7 +33,7 @@ public class HubSpotAssociationsApi : IHubSpotAssociationsApi
     {
         var associationPath =
             $"/crm/v4/objects/{objectType}/{objectId}/associations/default/{toObjectType}/{toObjectId}";
-        _client.Execute(associationPath, null, Method.PUT, convertToPropertiesSchema: false);
+        client.Execute(associationPath, null, Method.Get, convertToPropertiesSchema: false);
         
     }
 
@@ -47,7 +57,7 @@ public class HubSpotAssociationsApi : IHubSpotAssociationsApi
             associationTypeId
         };
         var body = new[] {label};
-        _client.Execute(associationPath, body, Method.PUT, convertToPropertiesSchema: false);
+        client.Execute(associationPath, body, Method.Put, convertToPropertiesSchema: false);
         
     }
     

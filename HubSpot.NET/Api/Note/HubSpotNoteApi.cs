@@ -8,15 +8,8 @@
     using HubSpot.NET.Core.Interfaces;
     using RestSharp;
 
-    public class HubSpotNoteApi : IHubSpotNoteApi
+    public class HubSpotNoteApi(IHubSpotClient client) : IHubSpotNoteApi
     {
-        private readonly IHubSpotClient _client;
-
-        public HubSpotNoteApi(IHubSpotClient client)
-        {
-            _client = client;
-        }
-
         /// <summary>
         /// Creates a note
         /// </summary>
@@ -25,7 +18,7 @@
         public NoteHubSpotResponseModel Create(NoteHubSpotRequestModel entity)
         {
             var path = $"{entity.RouteBasePath}";
-            var data = _client.Execute<NoteHubSpotResponseModel>(path, entity, Method.POST, false);
+            var data = client.Execute<NoteHubSpotResponseModel>(path, entity, Method.Post, false);
             return data;
         }
     }

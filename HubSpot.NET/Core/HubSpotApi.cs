@@ -13,6 +13,7 @@ using HubSpot.NET.Api.Properties;
 using HubSpot.NET.Api.Schemas;
 using HubSpot.NET.Core.Interfaces;
 using HubSpot.NET.Core.OAuth.Dto;
+using System;
 
 namespace HubSpot.NET.Core
 {
@@ -73,9 +74,23 @@ namespace HubSpot.NET.Core
             Initialise(client);
         }
 
+        public HubSpotApi(string apiKey, int ratePermitLimit, int rateQueueLimit, TimeSpan rateWindow)
+        {
+            IHubSpotClient client = new HubSpotBaseClient(apiKey, ratePermitLimit, rateQueueLimit, rateWindow);
+
+            Initialise(client);
+        }
+
         public HubSpotApi(HubSpotToken token)
         {
             IHubSpotClient client = new HubSpotBaseClient(token);
+
+            Initialise(client);
+        }
+
+        public HubSpotApi(HubSpotToken token, int ratePermitLimit, int rateQueueLimit, TimeSpan rateWindow)
+        {
+            IHubSpotClient client = new HubSpotBaseClient(token, ratePermitLimit, rateQueueLimit, rateWindow);
 
             Initialise(client);
         }

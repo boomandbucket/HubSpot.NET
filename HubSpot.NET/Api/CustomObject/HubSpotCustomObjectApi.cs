@@ -48,7 +48,7 @@ public class CreateCustomObjectHubSpotModel : IHubSpotModel
 
     public string RouteBasePath => "crm/v3/objects";
     [JsonProperty(PropertyName = "associations")]
-    public List<Association> Associations { get; set; } = new();
+    public List<Association> Associations { get; set; } = [];
 
     public class Association
     {
@@ -109,7 +109,7 @@ public class CustomObjectHubSpotModel : IHubSpotModel
 
     [IgnoreDataMember]
     [JsonProperty(PropertyName = "properties")]
-    public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+    public Dictionary<string, string> Properties { get; set; } = new();
     public bool IsNameValue => false;
     public void ToHubSpotDataEntity(ref dynamic dataEntity)
     {
@@ -146,19 +146,11 @@ public class CustomObjectAssociationModel
 }
 
 
-public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
+public class HubSpotCustomObjectApi(IHubSpotClient client, IHubSpotAssociationsApi hubSpotAssociationsApi)
+    : IHubSpotCustomObjectApi
 {
-    private readonly IHubSpotClient _client;
-
     private readonly string RouteBasePath = "crm/v3/objects";
-    private readonly IHubSpotAssociationsApi _hubSpotAssociationsApi;
 
-    public HubSpotCustomObjectApi(IHubSpotClient client, IHubSpotAssociationsApi hubSpotAssociationsApi)
-    {
-        _client = client;
-        _hubSpotAssociationsApi = hubSpotAssociationsApi;
-    }
-    
     /// <summary>
     /// List all objects of a custom object type in your system
     /// </summary>
@@ -168,18 +160,18 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
     /// <returns></returns>
     public CustomObjectListHubSpotModel<T> List<T>(string idForCustomObject, ListRequestOptions opts = null) where T : CustomObjectHubSpotModel, new()
     {
-        opts ??= new ListRequestOptions();
+        opts ??= new();
 
         var path = $"{RouteBasePath}/{idForCustomObject}"
-            .SetQueryParam("count", opts.Limit);
+            .SetQueryParam("limit", opts.Limit);
 
         if (opts.PropertiesToInclude.Any())
-            path = path.SetQueryParam("property", opts.PropertiesToInclude);
+            path = path.SetQueryParam("properties", string.Join(',',opts.PropertiesToInclude));
 
         if (opts.Offset.HasValue)
-            path = path.SetQueryParam("vidOffset", opts.Offset);
+            path = path.SetQueryParam("after", opts.Offset);
 
-        var response = _client.ExecuteList<CustomObjectListHubSpotModel<T>>(path, convertToPropertiesSchema: false);
+        var response = client.ExecuteList<CustomObjectListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
         return response;
     }
 
@@ -198,7 +190,7 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
     {
         var path = $"{RouteBasePath}/{objectTypeId}/{customObjectId}/associations/{idForDesiredAssociation}";
 
-        var response = _client.ExecuteList<CustomObjectListAssociationsModel<T>>(path, convertToPropertiesSchema:  false);
+        var response = client.ExecuteList<CustomObjectListAssociationsModel<T>>(path, convertToPropertiesSchema:  true);
         return response;
     }
 
@@ -216,12 +208,12 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
         var path = $"{RouteBasePath}/{entity.SchemaId}";
 
         var response =
-            _client.Execute<CreateCustomObjectHubSpotModel>(path, entity, Method.POST, convertToPropertiesSchema: false);
+            client.Execute<CreateCustomObjectHubSpotModel>(path, entity, Method.Post, convertToPropertiesSchema: true);
 
         
         if (response.Properties.TryGetValue("hs_object_id", out var parsedId))
         {
-            _hubSpotAssociationsApi.AssociationToObject(entity.SchemaId, parsedId.ToString(), associateObjectType, associateToObjectId);
+            hubSpotAssociationsApi.AssociationToObject(entity.SchemaId, parsedId.ToString(), associateObjectType, associateToObjectId);
             return parsedId.ToString();
         }
         return string.Empty;
@@ -237,7 +229,7 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
     {
         var path = $"{RouteBasePath}/{entity.SchemaId}/{entity.Id}";
 
-        _client.Execute<UpdateCustomObjectHubSpotModel>(path, entity, Method.PATCH, convertToPropertiesSchema: false);
+        client.Execute<UpdateCustomObjectHubSpotModel>(path, entity, Method.Patch, convertToPropertiesSchema: true);
         
         return string.Empty;
     }
@@ -253,7 +245,7 @@ public class HubSpotCustomObjectApi : IHubSpotCustomObjectApi
 
         path = path.SetQueryParam("properties", properties); //properties is comma seperated value of properties to include
 
-        var res = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+        var res = client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
 
         return res;
     }
