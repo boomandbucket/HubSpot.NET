@@ -206,7 +206,6 @@ namespace HubSpot.NET.Core
                     break;
             }
 
-            //request.JsonSerializer = new NewtonsoftRestSharpSerializer();
             return request;
         }
 
