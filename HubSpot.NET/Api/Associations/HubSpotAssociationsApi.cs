@@ -8,6 +8,19 @@ namespace HubSpot.NET.Api.Associations;
 public class HubSpotAssociationsApi(IHubSpotClient client) : IHubSpotAssociationsApi
 {
     /// <summary>
+    /// Gets association types between 2 object types
+    /// </summary>
+    /// <param name="fromObjectType">the type of the object you're fetching associations (e.g. contact) from.</param>
+    /// <param name="toObjectType"> the type of the object you are fetching associations to.</param>
+    public AssociationTypeListHubSpotModel ListTypes(string fromObjectType, string toObjectType)
+    {
+        var associationPath =
+            $"/crm/v4/associations/{fromObjectType}/{toObjectType}/labels";
+        return client.ExecuteList<AssociationTypeListHubSpotModel>(associationPath, null, Method.Get, convertToPropertiesSchema: false);
+
+    }
+
+    /// <summary>
     /// Gets associations to a specific object type
     /// </summary>
     /// <param name="objectType">the type of the object you're fetching associations (e.g. contact).</param>

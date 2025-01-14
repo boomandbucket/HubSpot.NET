@@ -4,6 +4,7 @@ namespace HubSpot.NET.Core.Interfaces;
 
 public interface IHubSpotAssociationsApi
 {
+    AssociationTypeListHubSpotModel ListTypes(string fromObjectType, string toObjectType);
     AssociationListHubSpotModel List(string objectType, string objectId, string toObjectType);
     void AssociationToObject(string objectType, string objectId, string toObjectType, string toObjectId);
 

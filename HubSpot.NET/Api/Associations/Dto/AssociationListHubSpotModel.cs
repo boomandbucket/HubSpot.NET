@@ -27,6 +27,24 @@ namespace HubSpot.NET.Api.Associations.Dto
         }
     }
 
+    public class AssociationTypeListHubSpotModel : IHubSpotModel
+    {
+        [DataMember(Name = "results"), JsonProperty(PropertyName = "results")]
+        public IList<AssociationType> AssociationTypes { get; set; } = new List<AssociationType>();
+
+        public bool IsNameValue => false;
+
+        public string RouteBasePath => "/crm/v4/associations/{fromObjectType}/{toObjectType}/labels";
+
+        public void FromHubSpotDataEntity(dynamic hubspotData)
+        {
+        }
+
+        public void ToHubSpotDataEntity(ref dynamic dataEntity)
+        {
+        }
+    }
+
     public class AssociationHubSpotModel
     {
         [DataMember(Name = "toObjectId")]
