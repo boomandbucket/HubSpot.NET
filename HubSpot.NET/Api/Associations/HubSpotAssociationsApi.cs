@@ -1,3 +1,4 @@
+using HubSpot.NET.Api.Associations.Dto;
 using HubSpot.NET.Core.Interfaces;
 using RestSharp;
 
@@ -50,5 +51,19 @@ public class HubSpotAssociationsApi : IHubSpotAssociationsApi
         _client.Execute(associationPath, body, Method.PUT, convertToPropertiesSchema: false);
         
     }
-    
+
+    /// <summary>
+    /// Retrieves alls associations of a given object to the specified object type
+    /// </summary>
+    /// <param name="objectType">Object type id of the object whose associations you're retrieving (e.g. "0-2" for company)</param>
+    /// <param name="objectId">Object id of the object whose associations you're retrieving</param>
+    /// <param name="toObjectType">Object type id of the associations to retrieve (e.g. "0-1" for contact)</param>
+    /// <returns></returns>
+    public AssociationListHubSpotModel GetAssociations(string objectType, string objectId, string toObjectType)
+    {
+        var associationPath = $"/crm/v4/objects/{objectType}/{objectId}/associations/{toObjectType}";
+        var associations = _client.ExecuteList<AssociationListHubSpotModel>(associationPath, Method.GET, convertToPropertiesSchema: false);
+        
+        return associations;
+    }
 }
