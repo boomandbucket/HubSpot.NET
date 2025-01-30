@@ -59,11 +59,12 @@ public class HubSpotAssociationsApi : IHubSpotAssociationsApi
     /// <param name="objectId">Object id of the object whose associations you're retrieving</param>
     /// <param name="toObjectType">Object type id of the associations to retrieve (e.g. "0-1" for contact)</param>
     /// <returns></returns>
-    public AssociationListHubSpotModel GetAssociations(string objectType, string objectId, string toObjectType)
+    public T GetAssociations<T>(string objectType, string objectId, string toObjectType) where T : AssociationListHubSpotModel, new()
+
     {
         var associationPath = $"/crm/v4/objects/{objectType}/{objectId}/associations/{toObjectType}";
-        var associations = _client.ExecuteList<AssociationListHubSpotModel>(associationPath, Method.GET, convertToPropertiesSchema: false);
-        
+        var associations = _client.ExecuteList<T>(associationPath, Method.GET, convertToPropertiesSchema: false);
+
         return associations;
     }
 }

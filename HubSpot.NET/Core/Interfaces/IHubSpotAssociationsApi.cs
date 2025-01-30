@@ -10,5 +10,5 @@ public interface IHubSpotAssociationsApi
     void AssociationToObjectByLabel(string objectType, string objectId, string toObjectType, string toObjectId,
         string associationCategory, int associationTypeId);
 
-    AssociationListHubSpotModel GetAssociations(string objectType, string objectId, string toObjectType);
+    T GetAssociations<T>(string objectType, string objectId, string toObjectType) where T : AssociationListHubSpotModel, new();
 }
