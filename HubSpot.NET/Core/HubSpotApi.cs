@@ -16,9 +16,13 @@ using HubSpot.NET.Core.OAuth.Dto;
 
 namespace HubSpot.NET.Core
 {
+    /// <summary>
+    /// ObjectTypeIds (e.g. "0-1" = contact and "0-2" = company)
+    /// </summary>
     public class HubSpotObjectIds
     {
         public static readonly string Contact = "0-1";
+        public static readonly string Company = "0-2";
         public static readonly string Deal = "0-3";
     }
     
