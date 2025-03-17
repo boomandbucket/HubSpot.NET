@@ -32,16 +32,15 @@ public class HubSpotAssociationsApi(IHubSpotClient client) : IHubSpotAssociation
         
     }
 
-    public void AssociationToObjectByLabel(string objectType, string objectId, string toObjectType, string toObjectId, string associationCategory, int associationTypeId)
+    public void AssociationToObjectByLabel(string objectType, string objectId, string toObjectType, string toObjectId, AssociationType[] associationTypes)
     {
         var associationPath =
             $"/crm/v4/objects/{objectType}/{objectId}/associations/{toObjectType}/{toObjectId}";
-        var label = new
+        var body = associationTypes.Select(associationType => new
         {
-            associationCategory,
-            associationTypeId
-        };
-        var body = new[] {label};
+            associationCategory = associationType.Category,
+            associationTypeId = associationType.TypeId
+        });
         client.Execute(associationPath, body, Method.Put, convertToPropertiesSchema: false);
         
     }

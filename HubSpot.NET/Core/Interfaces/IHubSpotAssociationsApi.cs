@@ -38,10 +38,9 @@ public interface IHubSpotAssociationsApi
     /// <param name="objectId"> the ID of the record to associate.</param>
     /// <param name="toObjectType"> the ID of the record to associate.</param>
     /// <param name="toObjectId"> the ID of the record to associate.</param>
-    /// <param name="associationCategory">Category type: HUBSPOT_DEFINED, INTEGRATOR_DEFINED, USER_DEFINED</param>
-    /// <param name="associationTypeId">This is the ID of the label, can be hard to find, the url of the label in your settings is a good place to look</param>
-    void AssociationToObjectByLabel(string objectType, string objectId, string toObjectType, string toObjectId,
-        string associationCategory, int associationTypeId);
+    /// <param name="associationTypes">a list of association types to add</param>
+    public void AssociationToObjectByLabel(string objectType, string objectId, string toObjectType, string toObjectId,
+        AssociationType[] associationTypes);
 
     /// <summary>
     /// Deletes an association between 2 objects
