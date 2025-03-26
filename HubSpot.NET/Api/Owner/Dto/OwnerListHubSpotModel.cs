@@ -12,9 +12,12 @@ namespace HubSpot.NET.Api.Owner.Dto
     [DataContract]
     public class OwnerListHubSpotModel<T> : IHubSpotModel, ICollection<T> where T: OwnerHubSpotModel, new()
     {
+        [DataMember(Name = "paging")]
+        public PagingModel Paging { get; set; }
+
         private List<T> Owners { get; } = new List<T>();
 
-        public string RouteBasePath => "/owners/v2";
+        public string RouteBasePath => "/owners/v3";
 
         public bool IsNameValue => false;
         public virtual void ToHubSpotDataEntity(ref dynamic converted)
@@ -38,6 +41,11 @@ namespace HubSpot.NET.Api.Owner.Dto
         public void Add(T item)
         {
             Owners.Add(item);
+        }
+
+        public void AddRange(IEnumerable<T> items)
+        {
+            Owners.AddRange(items);
         }
 
         public void Clear()

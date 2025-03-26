@@ -33,8 +33,18 @@ namespace HubSpot.NET.Api.Owner
                 if (!string.IsNullOrWhiteSpace(opts.EmailAddress))
                     path = path.SetQueryParam("email", opts.EmailAddress);
             }
+            
+            var ownersListHubSpotModel = new OwnerListHubSpotModel<T>();
+            OwnerListHubSpotModel<T> currentPage;
 
-            return _client.ExecuteList<OwnerListHubSpotModel<T>>(path, convertToPropertiesSchema: false);
+            do
+            {
+                currentPage = _client.ExecuteList<OwnerListHubSpotModel<T>>(path, convertToPropertiesSchema: false);
+                ownersListHubSpotModel.AddRange(currentPage);
+                
+            } while (currentPage.Paging?.Next != null);
+
+            return ownersListHubSpotModel;
         }
 
         /// <summary>

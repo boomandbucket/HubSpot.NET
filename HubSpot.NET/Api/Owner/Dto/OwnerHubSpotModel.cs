@@ -9,7 +9,7 @@ namespace HubSpot.NET.Api.Owner.Dto
     [DataContract]
     public class OwnerHubSpotModel : IHubSpotModel
     {
-        [DataMember(Name = "ownerId")]
+        [DataMember(Name = "id")]
         [IgnoreDataMember]
         public long? Id { get; set; }
 
@@ -25,7 +25,7 @@ namespace HubSpot.NET.Api.Owner.Dto
         [DataMember(Name = "type")]
         public string Type { get; set; }
 
-        public string RouteBasePath => "/owners/v2";
+        public string RouteBasePath => "/owners/v3";
         public bool IsNameValue => true;
 
         public virtual void ToHubSpotDataEntity(ref dynamic converted)
