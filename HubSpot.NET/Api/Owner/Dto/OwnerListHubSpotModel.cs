@@ -17,7 +17,7 @@ namespace HubSpot.NET.Api.Owner.Dto
 
         private List<T> Owners { get; } = new List<T>();
 
-        public string RouteBasePath => "/owners/v3";
+        public string RouteBasePath => "/crm/v3";
 
         public bool IsNameValue => false;
         public virtual void ToHubSpotDataEntity(ref dynamic converted)
