@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net;
 using HubSpot.NET.Core;
 using RestSharp;
@@ -22,10 +23,11 @@ namespace HubSpot.NET.Api.Owner
         /// </summary>
         /// <returns>The set of owners</returns>
         public OwnerListHubSpotModel<T> GetAll<T>(OwnerGetAllRequestOptions opts = null)
-            where T: OwnerHubSpotModel, new()
+            where T : OwnerHubSpotModel, new()
         {
             string path = $"{new OwnerHubSpotModel().RouteBasePath}/owners";
 
+            path = path.SetQueryParam("limit", 100);
             if (opts != null)
             {
                 if (opts.IncludeInactive)
@@ -33,17 +35,21 @@ namespace HubSpot.NET.Api.Owner
                 if (!string.IsNullOrWhiteSpace(opts.EmailAddress))
                     path = path.SetQueryParam("email", opts.EmailAddress);
             }
-            
-            var ownersListHubSpotModel = new OwnerListHubSpotModel<T>();
-            OwnerListHubSpotModel<T> currentPage;
+
+            var owners = new List<T>();
+            var currentPage = new OwnerListHubSpotModel<T>();
 
             do
             {
-                currentPage = _client.ExecuteList<OwnerListHubSpotModel<T>>(path, convertToPropertiesSchema: false);
-                ownersListHubSpotModel.AddRange(currentPage);
-                
+                var pagedPath = currentPage.Paging != null ? $"{path}&after={currentPage.Paging.Next.After}" : path;
+                currentPage = _client.ExecuteList<OwnerListHubSpotModel<T>>(pagedPath, convertToPropertiesSchema: false);
+                owners.AddRange(currentPage.Owners);
             } while (currentPage.Paging?.Next != null);
 
+            var ownersListHubSpotModel = new OwnerListHubSpotModel<T>
+            {
+                Owners = owners
+            };
             return ownersListHubSpotModel;
         }
 
