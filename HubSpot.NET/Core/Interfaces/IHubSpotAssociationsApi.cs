@@ -11,4 +11,8 @@ public interface IHubSpotAssociationsApi
         string associationCategory, int associationTypeId);
 
     T GetAssociations<T>(string objectType, string objectId, string toObjectType) where T : AssociationListHubSpotModel, new();
+    
+    void BatchCreateAssociations(string objectType, string toObjectType, IEnumerable<(string objectId, string toObjectId)> associations);
+    
+    void BatchDeleteAssociations(string objectType, string toObjectType, IEnumerable<(string objectId, string toObjectId)> associations);
 }
