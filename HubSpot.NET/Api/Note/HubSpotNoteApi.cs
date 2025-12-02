@@ -1,10 +1,6 @@
 ﻿namespace HubSpot.NET.Api.Note
 {
-    using System;
-    using System.Net;
     using HubSpot.NET.Api.Note.Dto;
-    using HubSpot.NET.Core;
-    using HubSpot.NET.Core.Extensions;
     using HubSpot.NET.Core.Interfaces;
     using RestSharp;
 
@@ -25,7 +21,7 @@
         public NoteHubSpotResponseModel Create(NoteHubSpotRequestModel entity)
         {
             var path = $"{entity.RouteBasePath}";
-            var data = _client.Execute<NoteHubSpotResponseModel>(path, entity, Method.POST, false);
+            var data = _client.Execute<NoteHubSpotResponseModel>(path, entity, Method.Post, false);
             return data;
         }
     }

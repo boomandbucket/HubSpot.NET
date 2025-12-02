@@ -31,7 +31,7 @@
         public T Create<T>(T entity) where T : ContactHubSpotModel, new()
         {
             var path = $"{entity.RouteBasePath}/contact";
-            return _client.Execute<T>(path, entity, Method.POST, convertToPropertiesSchema: true);
+            return _client.Execute<T>(path, entity, Method.Post, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@
         public T CreateOrUpdate<T>(T entity) where T : ContactHubSpotModel, new()
         {
             var path = $"{entity.RouteBasePath}/contact/createOrUpdate/email/{entity.Email}/";
-            return _client.Execute<T>(path, entity, Method.POST, convertToPropertiesSchema: true);
+            return _client.Execute<T>(path, entity, Method.Post, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@
 
             try
             {
-                T data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                T data = _client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
                 return data;
              }
             catch (HubSpotException exception)
@@ -81,7 +81,7 @@
 
             try
             {
-                T data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                T data = _client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
                 return data;
              }
             catch (HubSpotException exception)
@@ -104,7 +104,7 @@
 
             try
             {
-                T data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                T data = _client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
                 return data;
             }
             catch (HubSpotException exception)
@@ -153,7 +153,7 @@
 
             var path = $"{contact.RouteBasePath}/contact/vid/{contact.Id}/profile";
 
-            _client.Execute(path, contact, Method.POST, convertToPropertiesSchema: true);
+            _client.Execute(path, contact, Method.Post, convertToPropertiesSchema: true);
         }
         
         /// <summary>
@@ -164,7 +164,7 @@
         {
             var path = $"{new ContactHubSpotModel().RouteBasePath}/contact/vid/{contactId}";
 
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            _client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@
         {
             var path =  $"{new T().RouteBasePath}/contact/batch";
 
-            _client.ExecuteBatch(path, contacts.Select(c => (object) c).ToList(), Method.POST, convertToPropertiesSchema: true);
+            _client.ExecuteBatch(path, contacts.Select(c => (object) c).ToList(), Method.Post, convertToPropertiesSchema: true);
         }
 
         /// <summary>

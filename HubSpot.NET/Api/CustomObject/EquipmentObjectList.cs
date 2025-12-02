@@ -69,7 +69,8 @@ namespace HubSpot.NET.Api.CustomObject
                 "name",
                 "model",
                 "vin",
-                "hoursmileage"
+                "hoursmileage",
+                "on_highway"
             };
             return string.Join(",", equipmentPropsList);
         }

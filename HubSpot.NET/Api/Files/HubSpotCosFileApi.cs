@@ -24,7 +24,7 @@ namespace HubSpot.NET.Api.Files
         public FolderHubSpotModel CreateFolder(FolderHubSpotModel folder)
         {
             var path = $"{new FolderHubSpotModel().RouteBasePath}";
-            return _client.Execute<FolderHubSpotModel>(path, folder, Method.POST, false);
+            return _client.Execute<FolderHubSpotModel>(path, folder, Method.Post, false);
         }
         
         /// <summary>

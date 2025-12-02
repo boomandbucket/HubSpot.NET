@@ -25,7 +25,7 @@
         public EngagementHubSpotModel Create(EngagementHubSpotModel entity)
         {
             var path = $"{entity.RouteBasePath}/engagements";
-            var data = _client.Execute<EngagementHubSpotModel>(path, entity, Method.POST, false);
+            var data = _client.Execute<EngagementHubSpotModel>(path, entity, Method.Post, false);
             return data;
         }
 
@@ -42,7 +42,7 @@
 
             var path = $"{entity.RouteBasePath}/engagements/{entity.Engagement.Id}";
 
-            _client.Execute(path, entity, Method.PATCH, false);
+            _client.Execute(path, entity, Method.Patch, false);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@
 
             try
             {
-                var data = _client.Execute<EngagementHubSpotModel>(path, Method.GET, false);
+                var data = _client.Execute<EngagementHubSpotModel>(path, Method.Get, false);
                 return data;
             }
             catch (HubSpotException exception)
@@ -120,7 +120,7 @@
         {
             var path = $"{new EngagementHubSpotModel().RouteBasePath}/engagements/{engagementId}";
 
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            _client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@
         {
             var path = $"{new EngagementHubSpotModel().RouteBasePath}/engagements/{engagementId}/associations/{objectType}/{objectId}";
 
-            _client.Execute(path, method: Method.PUT, convertToPropertiesSchema: true);
+            _client.Execute(path, method: Method.Put, convertToPropertiesSchema: true);
         }
 
         /// <summary>

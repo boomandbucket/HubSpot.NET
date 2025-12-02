@@ -30,7 +30,7 @@ namespace HubSpot.NET.Api.Task
         {
             string path = $"{entity.RouteBasePath}";
 
-            return _client.Execute<T>(path, entity, Method.POST, SerialisationType.PropertyBag);
+            return _client.Execute<T>(path, entity, Method.Post, SerialisationType.PropertyBag);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace HubSpot.NET.Api.Task
 
             try
             {
-                return _client.Execute<T>(path, Method.GET, SerialisationType.PropertyBag);
+                return _client.Execute<T>(path, Method.Get, SerialisationType.PropertyBag);
              }
             catch (HubSpotException exception)
             {
@@ -94,7 +94,7 @@ namespace HubSpot.NET.Api.Task
             long entityId = entity.Id.Value;
             string path = $"{entity.RouteBasePath}/{entity.Id}";
 
-            T data = _client.Execute<T>(path, entity, Method.PATCH, SerialisationType.PropertyBag);
+            T data = _client.Execute<T>(path, entity, Method.Patch, SerialisationType.PropertyBag);
             // this just undoes some dirty meddling
             entity.Id = entityId;
 
@@ -109,7 +109,7 @@ namespace HubSpot.NET.Api.Task
         {
             var path = $"{new TaskHubSpotModel().RouteBasePath}/{taskId}";
 
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            _client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
     }
 }
