@@ -10,10 +10,12 @@
         IHubSpotOwnerApi Owner { get; }
         IHubSpotTaskApi Task { get; }
         IHubSpotCompanyPropertiesApi CompanyProperties { get; }
+        IHubSpotCustomObjectPropertiesApi CustomObjectProperties { get; }
         IHubSpotEmailSubscriptionsApi EmailSubscriptions { get; }
         IHubSpotCustomObjectApi CustomObjects { get; }
         IHubSpotAssociationsApi Associations { get; }
         IHubSpotSchemaApi Schema { get; }
+        IHubSpotNoteApi Note { get; }
 
     }
 }

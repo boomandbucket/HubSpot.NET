@@ -7,6 +7,7 @@ using HubSpot.NET.Api.Deal;
 using HubSpot.NET.Api.EmailSubscriptions;
 using HubSpot.NET.Api.Engagement;
 using HubSpot.NET.Api.Files;
+using HubSpot.NET.Api.Note;
 using HubSpot.NET.Api.Owner;
 using HubSpot.NET.Api.Properties;
 using HubSpot.NET.Api.Schemas;
@@ -15,9 +16,13 @@ using HubSpot.NET.Core.OAuth.Dto;
 
 namespace HubSpot.NET.Core
 {
+    /// <summary>
+    /// ObjectTypeIds (e.g. "0-1" = contact and "0-2" = company)
+    /// </summary>
     public class HubSpotObjectIds
     {
         public static readonly string Contact = "0-1";
+        public static readonly string Company = "0-2";
         public static readonly string Deal = "0-3";
     }
     
@@ -34,12 +39,15 @@ namespace HubSpot.NET.Core
         public IHubSpotOwnerApi Owner { get; protected set; }
 		public IHubSpotTaskApi Task { get; protected set; }
 		public IHubSpotCompanyPropertiesApi CompanyProperties { get; protected set; }
+        public IHubSpotCustomObjectPropertiesApi CustomObjectProperties { get; protected set; }
         public IHubSpotContactListApi ContactLists { get; protected set; }
 
         public IHubSpotEmailSubscriptionsApi EmailSubscriptions { get; protected set; }
         public IHubSpotCustomObjectApi CustomObjects { get; protected set; }
         public IHubSpotSchemaApi Schema { get; protected set; }
         public IHubSpotAssociationsApi Associations { get; protected set; }
+        
+        public IHubSpotNoteApi Note { get; protected set; }
 
         protected virtual void Initialise(IHubSpotClient client)
 		{
@@ -50,11 +58,13 @@ namespace HubSpot.NET.Core
             File = new HubSpotCosFileApi(client);
             Owner = new HubSpotOwnerApi(client);
             CompanyProperties = new HubSpotCompaniesPropertiesApi(client);
+            CustomObjectProperties = new HubSpotCustomObjectPropertiesApi(client);
             EmailSubscriptions = new HubSpotEmailSubscriptionsApi(client);
             ContactLists = new HubSpotContactListApi(client);
             Associations = new HubSpotAssociationsApi(client);
             CustomObjects = new HubSpotCustomObjectApi(client, Associations);
             Schema = new HubSpotSchemaApi(client);
+            Note = new HubSpotNoteApi(client);
         }
 
         
