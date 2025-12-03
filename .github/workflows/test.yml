@@ -12,14 +12,14 @@ jobs:
     env:
       BUILD_CONFIGURATION: Release
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.x.x
+        dotnet-version: 8.x.x
 
 
     - name: Sonarqube Begin
@@ -37,7 +37,7 @@ jobs:
 
 
     - name: Test
-      run: dotnet test ./HubSpot.NETCore.sln --verbosity normal -r  ./test-results --logger "GitHubActions;" --logger "trx;LogFilePath=./TestResults/test_result.trx" --collect:"XPlat Code Coverage" --settings $GITHUB_WORKSPACE/coverlet.runsettings
+      run: dotnet test ./HubSpot.NETCore.sln --verbosity normal --results-directory ./test-results --logger "GitHubActions;" --logger "trx;LogFilePath=./TestResults/test_result.trx" --collect:"XPlat Code Coverage" --settings $GITHUB_WORKSPACE/coverlet.runsettings
 
     - name: Sonarqube end
       run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"

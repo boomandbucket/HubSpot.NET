@@ -1,14 +1,14 @@
 namespace HubSpot.NET.Api.Task
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
     using HubSpot.NET.Api.Task.Dto;
     using HubSpot.NET.Core;
     using HubSpot.NET.Core.Extensions;
     using HubSpot.NET.Core.Interfaces;
     using RestSharp;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
 
     public class HubSpotTaskApi : IHubSpotTaskApi
     {
@@ -30,7 +30,7 @@ namespace HubSpot.NET.Api.Task
         {
             string path = $"{entity.RouteBasePath}";
 
-            return _client.Execute<T>(path, entity, Method.POST, SerialisationType.PropertyBag);
+            return _client.Execute<T>(path, entity, Method.Post, SerialisationType.PropertyBag);
         }
 
         /// <summary>
@@ -51,8 +51,8 @@ namespace HubSpot.NET.Api.Task
 
             try
             {
-                return _client.Execute<T>(path, Method.GET, SerialisationType.PropertyBag);
-             }
+                return _client.Execute<T>(path, Method.Get, SerialisationType.PropertyBag);
+            }
             catch (HubSpotException exception)
             {
                 if (exception.ReturnedError.StatusCode == HttpStatusCode.NotFound)
@@ -61,7 +61,7 @@ namespace HubSpot.NET.Api.Task
             }
         }
 
-        public TaskListHubSpotModel<T> List<T>(ListRequestOptions opts = null) where T: TaskHubSpotModel, new()
+        public TaskListHubSpotModel<T> List<T>(ListRequestOptions opts = null) where T : TaskHubSpotModel, new()
         {
             if (opts == null)
                 opts = new ListRequestOptions();
@@ -94,7 +94,7 @@ namespace HubSpot.NET.Api.Task
             long entityId = entity.Id.Value;
             string path = $"{entity.RouteBasePath}/{entity.Id}";
 
-            T data = _client.Execute<T>(path, entity, Method.PATCH, SerialisationType.PropertyBag);
+            T data = _client.Execute<T>(path, entity, Method.Patch, SerialisationType.PropertyBag);
             // this just undoes some dirty meddling
             entity.Id = entityId;
 
@@ -109,7 +109,7 @@ namespace HubSpot.NET.Api.Task
         {
             var path = $"{new TaskHubSpotModel().RouteBasePath}/{taskId}";
 
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            _client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
     }
 }

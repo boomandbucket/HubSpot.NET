@@ -1,12 +1,14 @@
-﻿namespace HubSpot.NET.Core.OAuth
-{
-    using System.Collections.Generic;
-    using System.Text;
+﻿using System;
+using System.Threading.Tasks;
 
+namespace HubSpot.NET.Core.OAuth
+{
     using HubSpot.NET.Core;
     using HubSpot.NET.Core.OAuth.Dto;
 	using Newtonsoft.Json;
 	using RestSharp;
+    using System.Collections.Generic;
+    using System.Text;
 
 	public class HubSpotOAuthApi
     {
@@ -16,7 +18,7 @@
 
         public virtual string MidRoute => "oauth/v1/token";
 
-        private readonly Dictionary<OAuthScopes, string> OAuthScopeNameConversions = new Dictionary<OAuthScopes, string>
+        private readonly Dictionary<OAuthScopes, string> OAuthScopeNameConversions = new()
         {
             { OAuthScopes.Automation , "automation" },
             { OAuthScopes.BusinessIntelligence, "business-intelligence" },
@@ -42,9 +44,9 @@
             _clientSecret = clientSecret;
         }
 
-        public HubSpotToken Authorize(string authCode, string redirectUri)
+        public async Task<HubSpotToken> AuthorizeAsync(string authCode, string redirectUri)
         {
-            RequestTokenHubSpotModel model = new RequestTokenHubSpotModel()
+            var model = new RequestTokenHubSpotModel()
             {
                 ClientId = ClientId,
                 ClientSecret = _clientSecret,
@@ -52,13 +54,17 @@
                 RedirectUri = redirectUri
             };
 
-            HubSpotToken token = InitiateRequest(model, _basePath);
+            var token = await InitiateRequestAsync(model, _basePath);
+
             return token;
         }
 
-        public HubSpotToken Refresh(string redirectUri, HubSpotToken token)
+        [Obsolete("Use AuthorizeAsync instead.")]
+        public HubSpotToken Authorize(string authCode, string redirectUri) => AuthorizeAsync(authCode, redirectUri).GetAwaiter().GetResult();
+
+        public async Task<HubSpotToken> RefreshAsync(string redirectUri, HubSpotToken token)
         {
-            RequestRefreshTokenHubSpotModel model = new RequestRefreshTokenHubSpotModel()
+            var model = new RequestRefreshTokenHubSpotModel()
             {
                 ClientId = ClientId,
                 ClientSecret = _clientSecret,
@@ -66,9 +72,13 @@
                 RefreshToken = token.RefreshToken
             };
 
-            HubSpotToken refreshToken = InitiateRequest(model, _basePath);
+            var refreshToken = await InitiateRequestAsync(model, _basePath);
+
             return refreshToken;
         }
+
+        [Obsolete("Use RefreshAsync instead.")]
+        public HubSpotToken Refresh(string redirectUri, HubSpotToken token) => RefreshAsync(redirectUri, token).GetAwaiter().GetResult();
 
         public void UpdateCredentials(string id, string secret)
         {
@@ -76,50 +86,57 @@
             _clientSecret = secret;
         }
 
-        private HubSpotToken InitiateRequest<K>(K model, string basePath, params OAuthScopes[] scopes)
+        private async Task<HubSpotToken> InitiateRequestAsync<K>(K model, string basePath, params OAuthScopes[] scopes)
         {
-            RestClient client = new RestClient(basePath);
+            var client = new RestClient(basePath);
 
-            StringBuilder builder = new StringBuilder();
-            foreach (OAuthScopes scope in scopes)
+            var builder = new StringBuilder();
+            foreach (var scope in scopes)
             {
-                if (builder.Length == 0)
-                    builder.Append($"{OAuthScopeNameConversions[scope]}");
-                else
-                    builder.Append($"%20{OAuthScopeNameConversions[scope]}");
+                if (builder.Length > 0)
+                {
+                    builder.Append("%20");
+                }
+
+                builder.Append(OAuthScopeNameConversions[scope]);
             }
 
-            RestRequest request = new RestRequest(MidRoute)
-            {
-                JsonSerializer = new FakeSerializer()
-            };
+            var request = new RestRequest(MidRoute);
 
-            Dictionary<string, string> jsonPreStringPairs = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(model));
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(model));
 
-            StringBuilder bodyBuilder = new StringBuilder();
-            foreach(KeyValuePair<string,string> pair in jsonPreStringPairs)
+            var bodyBuilder = new StringBuilder();
+            foreach(var pair in dict)
             {
                 if (bodyBuilder.Length > 0)
+                {
                     bodyBuilder.Append("&");
+                }
 
                 bodyBuilder.Append($"{pair.Key}={pair.Value}");
             }
 
-            request.AddJsonBody(bodyBuilder.ToString());
-            request.AddHeader("ContentType", "application/x-www-form-urlencoded");
+            request.AddStringBody(bodyBuilder.ToString(), ContentType.FormUrlEncoded);
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 
             if (builder.Length > 0)
+            {
                 request.AddQueryParameter("scope", builder.ToString());
+            }
 
-            IRestResponse<HubSpotToken> serverReponse = client.Post<HubSpotToken>(request);
+            var serverResponse = await client.ExecuteAsync<HubSpotToken>(request);
 
-            if (serverReponse.ResponseStatus != ResponseStatus.Completed)
-                throw new HubSpotException("Server did not respond to authorization request. Content: " + serverReponse.Content, new HubSpotError(serverReponse.StatusCode, serverReponse.Content), serverReponse.Content);
+            if (serverResponse.ResponseStatus != ResponseStatus.Completed)
+            {
+                throw new HubSpotException("Server did not respond to authorization request. Content: " + serverResponse.Content, new HubSpotError(serverResponse.StatusCode, serverResponse.Content), serverResponse.Content);
+            }
 
-            if (serverReponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                throw new HubSpotException("Error generating authentication token.", JsonConvert.DeserializeObject<HubSpotError>(serverReponse.Content), serverReponse.Content);
+            if (serverResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                throw new HubSpotException("Error generating authentication token.", JsonConvert.DeserializeObject<HubSpotError>(serverResponse.Content), serverResponse.Content);
+            }
 
-            return serverReponse.Data;
+            return serverResponse.Data;
         }
     }
 }

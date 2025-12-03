@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using System.Net;
-using HubSpot.NET.Core;
-using RestSharp;
 using HubSpot.NET.Api.Owner.Dto;
+using HubSpot.NET.Core;
 using HubSpot.NET.Core.Extensions;
 using HubSpot.NET.Core.Interfaces;
+using RestSharp;
+using System.Collections.Generic;
+using System.Net;
 
 namespace HubSpot.NET.Api.Owner
 {
@@ -65,7 +65,7 @@ namespace HubSpot.NET.Api.Owner
 
             try
             {
-                var data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: false);
+                var data = _client.Execute<T>(path, Method.Get, convertToPropertiesSchema: false);
                 return data;
             }
             catch (HubSpotException exception)

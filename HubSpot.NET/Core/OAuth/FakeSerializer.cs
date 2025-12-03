@@ -1,4 +1,6 @@
-﻿namespace HubSpot.NET.Core.OAuth
+﻿using RestSharp;
+
+namespace HubSpot.NET.Core.OAuth
 {
 	using RestSharp.Serializers;
 
@@ -7,12 +9,13 @@
         public string RootElement { get; set; }
         public string Namespace { get; set; }
         public string DateFormat { get; set; }
-        public string ContentType { get; set; }
+        public ContentType ContentType { get; set; }
 
         internal FakeSerializer()
         {
             ContentType = "application/x-www-form-urlencoded";
         }
+
         public string Serialize(object obj)
         {
             return obj.ToString();

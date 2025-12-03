@@ -1,18 +1,18 @@
 ﻿namespace HubSpot.NET.Api.Contact
 {
+    using HubSpot.NET.Api.Contact.Dto;
+    using HubSpot.NET.Core;
+    using HubSpot.NET.Core.Extensions;
+    using HubSpot.NET.Core.Interfaces;
+    using RestSharp;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Reflection;
     using System.Runtime.Serialization;
-    using HubSpot.NET.Api.Contact.Dto;
-    using HubSpot.NET.Core;
-    using HubSpot.NET.Core.Extensions;
-    using HubSpot.NET.Core.Interfaces;
-    using RestSharp;
 
-   public class HubSpotContactApi : IHubSpotContactApi
+    public class HubSpotContactApi : IHubSpotContactApi
     {
         private readonly IHubSpotClient _client;
 
@@ -31,7 +31,7 @@
         public T Create<T>(T entity) where T : ContactHubSpotModel, new()
         {
             var path = $"{entity.RouteBasePath}/contact";
-            return _client.Execute<T>(path, entity, Method.POST, convertToPropertiesSchema: true);
+            return _client.Execute<T>(path, entity, Method.Post, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@
         public T CreateOrUpdate<T>(T entity) where T : ContactHubSpotModel, new()
         {
             var path = $"{entity.RouteBasePath}/contact/createOrUpdate/email/{entity.Email}/";
-            return _client.Execute<T>(path, entity, Method.POST, convertToPropertiesSchema: true);
+            return _client.Execute<T>(path, entity, Method.Post, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -58,16 +58,16 @@
 
             try
             {
-                T data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                T data = _client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
                 return data;
-             }
+            }
             catch (HubSpotException exception)
             {
                 if (exception.ReturnedError.StatusCode == HttpStatusCode.NotFound)
                     return null;
                 throw;
             }
-       }
+        }
 
         /// <summary>
         /// Gets a contact by their email address
@@ -77,20 +77,20 @@
         /// <returns>The contact entity or null if the contact does not exist</returns>
         public T GetByEmail<T>(string email) where T : ContactHubSpotModel, new()
         {
-            var path =  $"{new T().RouteBasePath}/contact/email/{email}/profile";
+            var path = $"{new T().RouteBasePath}/contact/email/{email}/profile";
 
             try
             {
-                T data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                T data = _client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
                 return data;
-             }
+            }
             catch (HubSpotException exception)
             {
                 if (exception.ReturnedError.StatusCode == HttpStatusCode.NotFound)
                     return null;
                 throw;
             }
-       }
+        }
 
         /// <summary>
         /// Gets a contact by their user token
@@ -104,7 +104,7 @@
 
             try
             {
-                T data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                T data = _client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
                 return data;
             }
             catch (HubSpotException exception)
@@ -136,7 +136,7 @@
             if (opts.Offset.HasValue)
                 path = path.SetQueryParam("vidOffset", opts.Offset);
 
-			ContactListHubSpotModel<T> data = _client.ExecuteList<ContactListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
+            ContactListHubSpotModel<T> data = _client.ExecuteList<ContactListHubSpotModel<T>>(path, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -153,9 +153,9 @@
 
             var path = $"{contact.RouteBasePath}/contact/vid/{contact.Id}/profile";
 
-            _client.Execute(path, contact, Method.POST, convertToPropertiesSchema: true);
+            _client.Execute(path, contact, Method.Post, convertToPropertiesSchema: true);
         }
-        
+
         /// <summary>
         /// Deletes a given contact
         /// </summary>
@@ -164,7 +164,7 @@
         {
             var path = $"{new ContactHubSpotModel().RouteBasePath}/contact/vid/{contactId}";
 
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            _client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -175,9 +175,9 @@
         /// <param name="contacts">The set of contacts to update/create</param>
         public void Batch<T>(List<T> contacts) where T : ContactHubSpotModel, new()
         {
-            var path =  $"{new T().RouteBasePath}/contact/batch";
+            var path = $"{new T().RouteBasePath}/contact/batch";
 
-            _client.ExecuteBatch(path, contacts.Select(c => (object) c).ToList(), Method.POST, convertToPropertiesSchema: true);
+            _client.ExecuteBatch(path, contacts.Select(c => (object)c).ToList(), Method.Post, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -199,14 +199,14 @@
 
             if (!string.IsNullOrEmpty(opts.TimeOffset))
                 path = path.SetQueryParam("timeOffset", opts.TimeOffset);
-            
+
             path = path.SetQueryParam("propertyMode", opts.PropertyMode);
-            
+
             path = path.SetQueryParam("formSubmissionMode", opts.FormSubmissionMode);
-            
+
             path = path.SetQueryParam("showListMemberships", opts.ShowListMemberships);
 
-			ContactListHubSpotModel<T> data = _client.ExecuteList<ContactListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: true);
+            ContactListHubSpotModel<T> data = _client.ExecuteList<ContactListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -264,14 +264,14 @@
 
             if (!string.IsNullOrEmpty(opts.TimeOffset))
                 path = path.SetQueryParam("timeOffset", opts.TimeOffset);
-            
+
             path = path.SetQueryParam("propertyMode", opts.PropertyMode);
-            
+
             path = path.SetQueryParam("formSubmissionMode", opts.FormSubmissionMode);
-            
+
             path = path.SetQueryParam("showListMemberships", opts.ShowListMemberships);
 
-			ContactListHubSpotModel<T> data = _client.ExecuteList<ContactListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: true);
+            ContactListHubSpotModel<T> data = _client.ExecuteList<ContactListHubSpotModel<T>>(path, opts, convertToPropertiesSchema: true);
 
             return data;
         }

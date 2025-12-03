@@ -1,14 +1,14 @@
 ﻿namespace HubSpot.NET.Api.Deal
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
     using HubSpot.NET.Api.Deal.Dto;
     using HubSpot.NET.Core;
     using HubSpot.NET.Core.Extensions;
     using HubSpot.NET.Core.Interfaces;
     using RestSharp;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
 
     public class HubSpotDealApi : IHubSpotDealApi
     {
@@ -28,7 +28,7 @@
         public T Create<T>(T entity) where T : DealHubSpotModel, new()
         {
             var path = $"{entity.RouteBasePath}/deal";
-            var data = _client.Execute<T>(path, entity, Method.POST, convertToPropertiesSchema: true);
+            var data = _client.Execute<T>(path, entity, Method.Post, convertToPropertiesSchema: true);
             return data;
         }
 
@@ -44,7 +44,7 @@
 
             try
             {
-                var data = _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
+                var data = _client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
                 return data;
             }
             catch (HubSpotException exception)
@@ -68,7 +68,7 @@
 
             var path = $"{entity.RouteBasePath}/deal/{entity.Id}";
 
-            var data = _client.Execute<T>(path, entity, method: Method.PUT, convertToPropertiesSchema: true);
+            var data = _client.Execute<T>(path, entity, method: Method.Put, convertToPropertiesSchema: true);
             return data;
         }
 
@@ -140,7 +140,7 @@
         {
             var path = $"{new DealHubSpotModel().RouteBasePath}/deal/{dealId}";
 
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            _client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -213,7 +213,7 @@
 
             var path = "/crm/v3/objects/deals/search";
 
-            var data = _client.ExecuteList<SearchHubSpotModel<T>>(path, opts, Method.POST, convertToPropertiesSchema: true);
+            var data = _client.ExecuteList<SearchHubSpotModel<T>>(path, opts, Method.Post, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -234,7 +234,7 @@
                 toObjectId = companyId,
                 category = "HUBSPOT_DEFINED",
                 definitionId = 5 // see https://legacydocs.hubspot.com/docs/methods/crm-associations/crm-associations-overview
-            }, method: Method.PUT, convertToPropertiesSchema: true);
+            }, method: Method.Put, convertToPropertiesSchema: true);
             entity.Associations.AssociatedCompany = new[] { companyId };
             return entity;
         }
@@ -255,7 +255,7 @@
                 toObjectId = contactId,
                 category = "HUBSPOT_DEFINED",
                 definitionId = 3 // see https://legacydocs.hubspot.com/docs/methods/crm-associations/crm-associations-overview
-            }, method: Method.PUT, convertToPropertiesSchema: true);
+            }, method: Method.Put, convertToPropertiesSchema: true);
             entity.Associations.AssociatedContacts = new[] { contactId };
             return entity;
         }
@@ -274,7 +274,8 @@
             var companyResults = new List<long>();
             do
             {
-                var companyAssociations = _client.ExecuteList<AssociationIdListHubSpotModel>(string.Format("{0}?limit=100{1}", companyPath, offSet == null ? null : "&offset=" + offSet), convertToPropertiesSchema: false);
+                var companyAssociations = _client.ExecuteList<AssociationIdListHubSpotModel>(
+                    $"{companyPath}?limit=100{(offSet == null ? null : "&offset=" + offSet)}", convertToPropertiesSchema: false);
                 if (companyAssociations.Results.Any())
                     companyResults.AddRange(companyAssociations.Results);
                 if (companyAssociations.HasMore)
@@ -293,7 +294,8 @@
             var contactResults = new List<long>();
             do
             {
-                var contactAssociations = _client.ExecuteList<AssociationIdListHubSpotModel>(string.Format("{0}?limit=100{1}", contactPath, offSet == null ? null : "&offset=" + offSet), convertToPropertiesSchema: false);
+                var contactAssociations = _client.ExecuteList<AssociationIdListHubSpotModel>(
+                    $"{contactPath}?limit=100{(offSet == null ? null : "&offset=" + offSet)}", convertToPropertiesSchema: false);
                 if (contactAssociations.Results.Any())
                     contactResults.AddRange(contactAssociations.Results);
                 if (contactAssociations.HasMore)

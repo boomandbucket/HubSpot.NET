@@ -1,8 +1,6 @@
 ﻿using HubSpot.NET.Core.Interfaces;
-using System.Collections.Generic;
 using System;
 using System.Runtime.Serialization;
-using System.Xml.Linq;
 
 namespace HubSpot.NET.Api.CustomObject;
 public class HubspotEquipmentObjectModel : IHubSpotModel
@@ -168,7 +166,11 @@ public class HubspotEquipmentObjectModel : IHubSpotModel
     [DataMember(Name = "hoursmileage")]
     public string? HoursMileage { get; set; }
 
+    [DataMember(Name = "on_highway")]
+    public string? OnHighway { get; set; }
+
     public bool IsNameValue => false;
+
     public void ToHubSpotDataEntity(ref dynamic dataEntity)
     {
     }
