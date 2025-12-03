@@ -1,4 +1,6 @@
-﻿namespace HubSpot.NET.Core.Serializers
+﻿using RestSharp;
+
+namespace HubSpot.NET.Core.Serializers
 {
     using System.Collections.Generic;
 
@@ -43,6 +45,6 @@
         /// <summary>
         /// Content type for serialized content
         /// </summary>
-        public string ContentType { get; set; }
+        public ContentType ContentType { get; set; }
     }
 }

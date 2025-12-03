@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RestSharp;
+﻿using RestSharp;
 
 namespace HubSpot.NET.Core
 {
     public static class RestSharpExtensions
     {
-        public static bool IsSuccessful(this IRestResponse response)
+        public static bool IsSuccessful(this RestResponse response)
         {
             return (int) response.StatusCode >= 200 
                    && (int) response.StatusCode <= 299 

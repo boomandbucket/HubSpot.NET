@@ -1,14 +1,14 @@
 namespace HubSpot.NET.Api.Company
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
     using HubSpot.NET.Api.Company.Dto;
     using HubSpot.NET.Core;
     using HubSpot.NET.Core.Extensions;
     using HubSpot.NET.Core.Interfaces;
     using RestSharp;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
 
     public class HubSpotCompanyApi : IHubSpotCompanyApi
     {
@@ -30,7 +30,7 @@ namespace HubSpot.NET.Api.Company
         {
             var path = $"{entity.RouteBasePath}/companies";
 
-            return _client.Execute<T>(path, entity, Method.POST, convertToPropertiesSchema: true);
+            return _client.Execute<T>(path, entity, Method.Post, convertToPropertiesSchema: true);
         }
 
         /// <summary>
@@ -45,8 +45,8 @@ namespace HubSpot.NET.Api.Company
 
             try
             {
-                return _client.Execute<T>(path, Method.GET, convertToPropertiesSchema: true);
-             }
+                return _client.Execute<T>(path, Method.Get, convertToPropertiesSchema: true);
+            }
             catch (HubSpotException exception)
             {
                 if (exception.ReturnedError.StatusCode == HttpStatusCode.NotFound)
@@ -71,11 +71,10 @@ namespace HubSpot.NET.Api.Company
 
             try
             {
-
-                CompanySearchResultModel<T> data = _client.ExecuteList<CompanySearchResultModel<T>>(path, options, Method.POST, convertToPropertiesSchema: true);
+                CompanySearchResultModel<T> data = _client.ExecuteList<CompanySearchResultModel<T>>(path, options, Method.Post, convertToPropertiesSchema: true);
 
                 return data;
-             }
+            }
             catch (HubSpotException exception)
             {
                 if (exception.ReturnedError.StatusCode == HttpStatusCode.NotFound)
@@ -116,7 +115,7 @@ namespace HubSpot.NET.Api.Company
 
             var path = $"{entity.RouteBasePath}/companies/{entity.Id}";
 
-            T data = _client.Execute<T>(path, entity, Method.PUT, convertToPropertiesSchema: true);
+            T data = _client.Execute<T>(path, entity, Method.Put, convertToPropertiesSchema: true);
 
             return data;
         }
@@ -129,7 +128,7 @@ namespace HubSpot.NET.Api.Company
         {
             var path = $"{new CompanyHubSpotModel().RouteBasePath}/companies/{companyId}";
 
-            _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
+            _client.Execute(path, method: Method.Delete, convertToPropertiesSchema: true);
         }
 
         public CompanySearchHubSpotModel<T> Search<T>(SearchRequestOptions opts = null) where T : CompanyHubSpotModel, new()
@@ -139,7 +138,7 @@ namespace HubSpot.NET.Api.Company
 
             var path = "/crm/v3/objects/companies/search";
 
-			CompanySearchHubSpotModel<T> data = _client.ExecuteList<CompanySearchHubSpotModel<T>>(path, opts, Method.POST, convertToPropertiesSchema: true);
+			CompanySearchHubSpotModel<T> data = _client.ExecuteList<CompanySearchHubSpotModel<T>>(path, opts, Method.Post, convertToPropertiesSchema: true);
 
             return data;
         }
