@@ -111,5 +111,16 @@ namespace HubSpot.NET.Api.Task
 
             _client.Execute(path, method: Method.DELETE, convertToPropertiesSchema: true);
         }
+        
+        public void AssociateToCompany<T>(T entity, long companyId) where T : TaskHubSpotModel, new()
+        {
+            if (entity.Id == null || entity.Id < 1)
+                throw new ArgumentException("Task entity must have an id set!");
+            
+            var entityId = entity.Id.Value;
+            var path = $"{entity.RouteBasePath}/{entityId}/associations/company/{companyId}/task_to_company";
+            
+            _client.Execute<T>(path, entity, Method.PUT, SerialisationType.PropertyBag);
+        }
     }
 }

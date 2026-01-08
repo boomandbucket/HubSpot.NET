@@ -9,6 +9,9 @@ namespace HubSpot.NET.Core.Interfaces
         void Delete(long dealId);
         T GetById<T>(long dealId, List<string> propertiesToInclude = null) where T : TaskHubSpotModel, new();
         T Update<T>(T entity) where T : TaskHubSpotModel, new();
+        
+        void AssociateToCompany<T>(T entity, long companyId)
+            where T : TaskHubSpotModel, new();
 
         TaskListHubSpotModel<T> List<T>(ListRequestOptions opts = null)
             where T : TaskHubSpotModel, new();
