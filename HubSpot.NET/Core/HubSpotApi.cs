@@ -11,6 +11,7 @@ using HubSpot.NET.Api.Note;
 using HubSpot.NET.Api.Owner;
 using HubSpot.NET.Api.Properties;
 using HubSpot.NET.Api.Schemas;
+using HubSpot.NET.Api.Task;
 using HubSpot.NET.Core.Interfaces;
 using HubSpot.NET.Core.OAuth.Dto;
 
@@ -65,6 +66,7 @@ namespace HubSpot.NET.Core
             CustomObjects = new HubSpotCustomObjectApi(client, Associations);
             Schema = new HubSpotSchemaApi(client);
             Note = new HubSpotNoteApi(client);
+            Task = new HubSpotTaskApi(client);
         }
 
         

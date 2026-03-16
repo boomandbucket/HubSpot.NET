@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using HubSpot.NET.Api.Associations.Dto;
 using HubSpot.NET.Core.Interfaces;
 using RestSharp;
@@ -66,5 +68,51 @@ public class HubSpotAssociationsApi : IHubSpotAssociationsApi
         var associations = _client.ExecuteList<T>(associationPath, Method.Get, convertToPropertiesSchema: false);
 
         return associations;
+    }
+
+    /// <summary>
+    /// Adds the ability to batch associate via the default association
+    /// </summary>
+    /// <param name="objectType">the type of the object you're associating (e.g. contact)</param>
+    /// <param name="toObjectType">the type of the object you're associating to(e.g. contact)</param>
+    /// <param name="associations">pairs of object ids to associate</param>
+    /// <returns></returns>
+    public void BatchCreateAssociations(string objectType, string toObjectType, IEnumerable<(string objectId, string toObjectId)> associations)
+    {
+        var associationPath =
+            $"/crm/v4/associations/{objectType}/{toObjectType}/batch/associate/default";
+        
+        var body = new
+        {
+            inputs = associations.Select(a => new
+            {
+                from = new { id = a.objectId }, 
+                to = new { id = a.toObjectId }
+            })
+        };
+        _client.Execute(associationPath, body, Method.Post, convertToPropertiesSchema: false);
+    }
+
+    /// <summary>
+    /// Adds the ability to batch remove associations
+    /// </summary>
+    /// <param name="objectType">the type of the object you're associating (e.g. contact)</param>
+    /// <param name="toObjectType">the type of the object you're associating to(e.g. contact)</param>
+    /// <param name="associations">pairs of object ids to associate</param>
+    /// <returns></returns>
+    public void BatchDeleteAssociations(string objectType, string toObjectType, IEnumerable<(string objectId, string toObjectId)> associations)
+    {
+        var associationPath =
+            $"/crm/v4/associations/{objectType}/{toObjectType}/batch/archive";
+        
+        var body = new
+        {
+            inputs = associations.Select(a => new
+            {
+                from = new { id = a.objectId }, 
+                to = new[] { new { id = a.toObjectId } }
+            })
+        };
+        _client.Execute(associationPath, body, Method.Post, convertToPropertiesSchema: false);
     }
 }
