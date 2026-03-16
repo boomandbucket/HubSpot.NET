@@ -1,27 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Version>1.0.1</Version>
-    <Authors>HubSpot.NETCORE</Authors>
-    <Company>HubSpot.NETCORE</Company>
-    <Description>.NET CORE client library targeting the HubSpot APIs.</Description>
-    <Copyright>HubSpot.NET</Copyright>
-    <PackageLicenseUrl>https://github.com/boomandbucket/HubSpot.NET/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/boomandbucket/HubSpot.NET</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/boomandbucket/HubSpot.NET.git</RepositoryUrl>
-    <PackageTags>hubspot api wrapper c# contact company deal engagement properties crm custom objects</PackageTags>
-    <PackageReleaseNotes>1.0.0</PackageReleaseNotes>
-    <PackageId>HubSpot.NETCORE</PackageId>
-    <TargetFramework>net8.0</TargetFramework>
-    <PackageVersion>1.0.0</PackageVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Properties\**" />
-    <EmbeddedResource Remove="Properties\**" />
-    <None Remove="Properties\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="RestSharp" Version="113.0.0" />
-  </ItemGroup>
+    <PropertyGroup>
+        <Version>1.0.0</Version>
+        <Authors>HubSpot.NETCORE</Authors>
+        <Company>HubSpot.NETCORE</Company>
+        <Description>.NET CORE client library targeting the HubSpot APIs.</Description>
+        <Copyright>HubSpot.NET</Copyright>
+        <PackageLicenseUrl>https://github.com/boomandbucket/HubSpot.NET/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageProjectUrl>https://github.com/boomandbucket/HubSpot.NET</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/boomandbucket/HubSpot.NET.git</RepositoryUrl>
+        <PackageTags>hubspot api wrapper c# contact company deal engagement properties crm custom objects</PackageTags>
+        <PackageReleaseNotes>1.0.0</PackageReleaseNotes>
+        <PackageId>HubSpot.NETCORE</PackageId>
+        <TargetFramework>net10.0</TargetFramework>
+        <PackageVersion>1.0.54-boomevents.1</PackageVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+        <PackageReference Include="RestSharp" Version="114.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Remove="Properties\**" />
+        <None Remove="Properties\**" />
+    </ItemGroup>
 </Project>

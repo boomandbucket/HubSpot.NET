@@ -90,7 +90,7 @@ public class HubSpotAssociationsApi : IHubSpotAssociationsApi
                 to = new { id = a.toObjectId }
             })
         };
-        _client.Execute(associationPath, body, Method.POST, convertToPropertiesSchema: false);
+        _client.Execute(associationPath, body, Method.Post, convertToPropertiesSchema: false);
     }
 
     /// <summary>
@@ -113,6 +113,6 @@ public class HubSpotAssociationsApi : IHubSpotAssociationsApi
                 to = new[] { new { id = a.toObjectId } }
             })
         };
-        _client.Execute(associationPath, body, Method.POST, convertToPropertiesSchema: false);
+        _client.Execute(associationPath, body, Method.Post, convertToPropertiesSchema: false);
     }
 }
