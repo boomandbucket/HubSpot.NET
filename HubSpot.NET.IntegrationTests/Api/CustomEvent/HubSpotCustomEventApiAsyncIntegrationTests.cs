@@ -82,7 +82,7 @@ namespace HubSpot.NET.IntegrationTests.Api.CustomEvent
             // Act & Assert
             Func<Task> act = async () => await CustomEventApi.DeleteEventDefinitionAsync(nonExistentEventName);
             await act.Should().ThrowAsync<HubSpotException>()
-                .Where(e => e.ReturnedError.StatusCode == HttpStatusCode.BadRequest);
+                .Where(e => e.ReturnedError.StatusCode == HttpStatusCode.NotFound);
         }
 
         [Fact]
@@ -110,7 +110,7 @@ namespace HubSpot.NET.IntegrationTests.Api.CustomEvent
         }
 
         [Fact]
-        public async Task SendEventTrackingDataForContact_WhenInvalidEmail_ShouldNotThrowException()
+        public async Task SendEventTrackingDataForContact_WhenInvalidEmail_ShouldThrowException()
         {
             var eventDefinition = await CreateUniqueEventDefinitionAsync();
 
@@ -118,7 +118,7 @@ namespace HubSpot.NET.IntegrationTests.Api.CustomEvent
 
             Func<Task> act = async () => await CustomEventApi.SendEventTrackingData(eventTracking);
 
-            await act.Should().NotThrowAsync();
+            await act.Should().ThrowAsync<HubSpotException>();
         }
 
         [Fact]
@@ -128,10 +128,15 @@ namespace HubSpot.NET.IntegrationTests.Api.CustomEvent
 
             var result = await CustomEventApi.GetByNameAsync<EventDefinition>(eventDefinition.Name);
 
+            var label = "Test Event";
             result.Should().BeEquivalentTo(new EventDefinition
             {
                 Name = eventDefinition.Name,
-                Labels = new SchemasLabelsModel() { Singular = "Test Event" }
+                Labels = new SchemasLabelsModel
+                {
+                    Singular = label,
+                    Plural = label
+                }
             }, options =>
             options
                 .Excluding(e => e.Description)
